@@ -3,12 +3,10 @@
 # email: wangshugen@ict.ac.cn
 # date: 2018年8月23日 14:26:49
 import json
-import sys
 
 from tornado.web import RequestHandler
 
-sys.path.append('..')
-from utils.time_utils import current_datetime
+from easy_tornado.utils.time_utils import current_datetime
 
 
 class WebApplicationHandler(RequestHandler):

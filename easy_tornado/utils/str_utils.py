@@ -3,11 +3,10 @@
 # email: wangshugen@ict.ac.cn
 # date: 2018年8月23日 14:26:49
 import hashlib
-
-# 获取文本的MD5值
 import json
 
 
+# 获取文本的MD5值
 def md5sum(text):
     _ctx = hashlib.md5()
     _ctx.update(text.encode('utf-8'))
