@@ -2,6 +2,7 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018年8月23日 14:26:49
+import json
 import os
 import subprocess
 
@@ -66,3 +67,21 @@ def write_line(_wfp, _line):
     if _wfp:
         _wfp.write(_line.strip())
         _wfp.write('\n')
+
+
+# 写入内容至文件
+def write_file_contents(file_path, contents):
+    with open(file_path, 'w') as wfp:
+        wfp.write(contents)
+
+
+# 写入JSON内容
+def write_json_contents(file_path, data):
+    write_file_contents(file_path, json.dumps(data, ensure_ascii=True))
+
+
+# 将可迭代的数据以行是的形式写入文件
+def write_iterable_as_lines(file_path, iterable_obj, obj2line_func):
+    with open(file_path, 'w') as wfp:
+        for obj in iterable_obj:
+            write_line(wfp, obj2line_func(obj))
