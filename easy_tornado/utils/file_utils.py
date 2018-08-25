@@ -7,6 +7,22 @@ import os
 import subprocess
 
 
+# 文件绝对路径
+def abspath(file_obj):
+    return os.path.abspath(file_obj)
+
+
+# 文件所在目录绝对路径
+def absdir(file_obj):
+    _abspath = abspath(file_obj)
+    return os.path.dirname(_abspath)
+
+
+# 路径父路径
+def dirname(path):
+    return os.path.dirname(path)
+
+
 # 判断文件是否存在
 def file_exists(_file):
     return os.path.exists(_file)
