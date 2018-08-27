@@ -4,7 +4,8 @@
 # date: 2018年8月23日 14:26:49
 import json
 
-from tornado.web import RequestHandler
+from tornado.httpclient import AsyncHTTPClient
+from tornado.web import RequestHandler, asynchronous
 
 from easy_tornado.utils.time_utils import current_datetime
 
@@ -12,20 +13,32 @@ from easy_tornado.utils.time_utils import current_datetime
 class WebApplicationHandler(RequestHandler):
     # 错误信息
     error_mapper = dict()
+
+    # 正常响应
     none = 0
     error_mapper[none] = 'none'
+
+    # 无效请求(参数错误)
     invalid_request = 1001
     error_mapper[invalid_request] = 'request param is invalid'
+
+    # 数据未找到
     not_found = 4004
     error_mapper[not_found] = 'not found'
+
+    # 本系统错误
     system_error = 5002
     error_mapper[system_error] = 'system error'
 
-    # 调试选项
+    # 内部服务器错误
+    internal_server = 5003
+    error_mapper[internal_server] = 'internal server'
+
+    # 调试模式
     debug = False
 
-    # 后台进程
-    daemon = False
+    # 作为后台进程运行
+    daemon = True
 
     # 加载为json数据
     def load_request_data(self):
@@ -38,9 +51,16 @@ class WebApplicationHandler(RequestHandler):
             return False
         return params
 
-    @staticmethod
-    def pretty_print(data):
-        print(json.dumps(data, ensure_ascii=False))
+    # 转发请求
+    @asynchronous
+    def forward(self, url, data=None, callback=None, method='POST', timeout=3600):
+        if callback is None:
+            callback = self.response
+        if data is None:
+            data = {}
+        data = json.dumps(data, ensure_ascii=False)
+        client = AsyncHTTPClient()
+        client.fetch(url, body=data, callback=callback, method=method, request_timeout=timeout)
 
     def success_response(self, data=None):
         self.error_response(self.none, self.error_mapper[self.none], data)
@@ -64,5 +84,19 @@ class WebApplicationHandler(RequestHandler):
         self.write(data)
         self.finish()
 
+    # 默认响应处理器
+    def response(self, response):
+        try:
+            if self.debug:
+                print(response.body)
+            result = json.loads(response.body)
+        except ValueError:
+            return self.error_response(error_no=self.system_error)
+        return self.success_response(result)
+
     def data_received(self, chunk):
         pass
+
+    @staticmethod
+    def pretty_print(data):
+        print(json.dumps(data, ensure_ascii=False))
