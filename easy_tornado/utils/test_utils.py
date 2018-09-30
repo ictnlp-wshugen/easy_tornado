@@ -10,9 +10,22 @@ from time_utils import Timer
 from web_utils import request
 
 
+# 为非首行添加空格
+def _add_indent(lines, space_cnt):
+    s = lines.split('\n')
+    # don't do anything for single-line stuff
+    if len(s) == 1:
+        return lines
+    first = s.pop(0)
+    s = [(space_cnt * ' ') + line for line in s]
+    s = '\n'.join(s)
+    s = first + '\n' + s
+    return s
+
+
 # 缩进打印
 def print_indent(message):
-    print('    ' + message)
+    print(_add_indent(message, 2))
 
 
 # 以某个消息为前缀打印

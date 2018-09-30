@@ -4,7 +4,11 @@
 # date: 2018年8月23日 14:26:49
 import json
 import os
+import shutil
 import subprocess
+import tempfile
+
+from decorator import contextmanager
 
 
 # 文件绝对路径
@@ -97,7 +101,16 @@ def write_json_contents(file_path, data):
 
 
 # 将可迭代的数据以行是的形式写入文件
-def write_iterable_as_lines(file_path, iterable_obj, obj2line_func):
+def write_iterable_as_lines(file_path, iterable_obj, obj2line_func=lambda x: x):
     with open(file_path, 'w') as wfp:
         for obj in iterable_obj:
             write_line(wfp, obj2line_func(obj))
+
+
+# 创建临时路径
+@contextmanager
+def mkdtemp():
+    path = tempfile.mkdtemp()
+    create_if_not_exist_path(path)
+    yield path
+    shutil.rmtree(path)

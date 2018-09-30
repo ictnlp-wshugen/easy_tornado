@@ -6,9 +6,9 @@
 from setuptools import setup
 
 setup(name='easy_tornado',
-      version='0.3',
+      version='0.31',
       description='A tornado based web framework package',
       author='empire (Wang Shugen)',
       author_email='wsg1107556314@163.com',
       url='http://www.wshugen.cn/',
-      packages=['easy_tornado', 'easy_tornado.utils', 'easy_tornado.web'], install_requires=['tornado'])
+      packages=['easy_tornado', 'easy_tornado.utils', 'easy_tornado.web'], install_requires=['tornado', 'decorator'])
