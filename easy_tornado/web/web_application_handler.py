@@ -8,6 +8,7 @@ from tornado.httpclient import AsyncHTTPClient
 from tornado.web import RequestHandler, asynchronous
 
 from easy_tornado.utils.time_utils import current_datetime
+from easy_tornado.utils.time_utils import current_timestamp
 
 
 class WebApplicationHandler(RequestHandler):
@@ -47,6 +48,8 @@ class WebApplicationHandler(RequestHandler):
             if self.debug:
                 params['request_time'] = current_datetime()
                 self.pretty_print(params)
+            # 加入私有属性作为数据，否则params为空，被if not判断为真
+            params['_timestamp'] = current_timestamp()
         except ValueError:
             return False
         return params
