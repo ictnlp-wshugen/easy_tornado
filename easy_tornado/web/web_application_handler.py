@@ -68,11 +68,13 @@ class WebApplicationHandler(RequestHandler):
     def success_response(self, data=None):
         self.error_response(self.none, self.error_mapper[self.none], data)
 
-    def error_response(self, error_no=invalid_request, error_desc=error_mapper[invalid_request], data=None):
+    def error_response(self, error_no=invalid_request, error_desc=None, data=None):
         res = data
         if not data:
             res = dict()
         res['errno'] = error_no
+        if error_desc is None:
+            error_desc = self.error_mapper[error_no]
         res['error'] = error_desc
         self.__json_response(res)
 
