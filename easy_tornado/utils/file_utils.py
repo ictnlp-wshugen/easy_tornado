@@ -56,9 +56,14 @@ def create_if_not_exist_path(target_path):
         os.makedirs(target_path)
 
 
-# 格式化路径
+# 拼接路径
 def format_path(base_path, sub_path):
     return os.path.join(base_path, sub_path)
+
+
+# 拼接路径
+concat_path = format_path
+cp = format_path
 
 
 # 追加文件
