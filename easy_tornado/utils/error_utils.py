@@ -7,5 +7,5 @@
 # 退出并打印消息
 def error_exit(_error_no, _error_desc=None):
     if _error_desc:
-        print _error_desc
+        print(_error_desc)
     exit(_error_no)

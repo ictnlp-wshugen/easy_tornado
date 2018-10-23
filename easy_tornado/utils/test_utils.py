@@ -6,8 +6,8 @@ from __future__ import print_function
 
 import json
 
-from time_utils import Timer
-from web_utils import request
+from .time_utils import Timer
+from .web_utils import request
 
 
 # 为非首行添加空格

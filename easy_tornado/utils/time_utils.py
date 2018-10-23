@@ -32,13 +32,16 @@ class Timer(object):
     # 无效时间戳标志
     _invalid_ts = -1
 
-    def __init__(self):
+    def __init__(self, debug=False):
+        self.debug = debug
         self.start_ts = self._invalid_ts
         self.finish_ts = self._invalid_ts
         self.reset()
 
     def reset(self):
         self.start()
+        if self.debug:
+            self.display_start('start at: ')
 
     def start(self):
         self.start_ts = time.time()

@@ -2,6 +2,7 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018年8月23日 14:26:49
+from six.moves import xrange
 
 
 # 检测字典data中是否包含指定的所有键
