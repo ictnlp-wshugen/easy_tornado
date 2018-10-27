@@ -4,6 +4,7 @@
 # date: 2018年8月23日 14:26:49
 import json
 import urllib
+
 import six
 
 
@@ -11,17 +12,21 @@ import six
 def request(request_url, data=None, as_json=True):
     if data is None:
         data = {}
-    _urllib = None
     if six.PY2:
         import urllib2
-        _urllib = urllib2
+        req = urllib2.Request(request_url)
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+        if as_json:
+            response = opener.open(req, json.dumps(data, ensure_ascii=False))
+        else:
+            response = opener.open(req, urllib.urlencode(data))
+        result = response.read()
     else:
         import urllib3
-        _urllib = urllib3
-    req = urllib3.Request(request_url)
-    opener = urllib3.build_opener(urllib2.HTTPCookieProcessor())
-    if as_json:
-        response = opener.open(req, json.dumps(data, ensure_ascii=False))
-    else:
-        response = opener.open(req, urllib.urlencode(data))
-    return response.read()
+        pool = urllib3.PoolManager()
+        if as_json:
+            response = pool.request('POST', request_url, fields=data)
+        else:
+            response = pool.request('POST', request_url, body=urllib.urlencode(data))
+        result = response.data
+    return result
