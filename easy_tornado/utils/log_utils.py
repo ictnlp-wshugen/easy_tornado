@@ -51,7 +51,7 @@ def it_print(message, indent=0, device=1, newline=True):
     else:
         device = sys.stdout
 
-    device.writelines(message)
+    device.write(message)
     if newline:
         device.write('\n')
     device.flush()
