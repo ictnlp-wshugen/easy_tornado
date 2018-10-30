@@ -30,10 +30,10 @@ def _add_indent(lines, space_cnt):
 
 def it_print(message, indent=0, device=1, newline=True):
     """
-    in time print: print message to console immediately
+    in time print: print one line to console immediately
 
     :param message: the message to be printed
-    :type message: object
+    :type message: str
 
     :param indent: number of blank to be indented, default 0
     :type indent: int
@@ -44,10 +44,7 @@ def it_print(message, indent=0, device=1, newline=True):
     :param newline: whether to append a new line, default True
     :type newline: bool
     """
-    if not isinstance(message, list) and isinstance(message, tuple):
-        message = [message]
-
-    message = _add_indent(message, indent)
+    message = ' ' * indent + message
 
     if device == 2:
         device = sys.stderr
@@ -58,3 +55,12 @@ def it_print(message, indent=0, device=1, newline=True):
     if newline:
         device.write('\n')
     device.flush()
+
+
+def it_prints(message, indent=0, indent_inner=2, device=1, newline=True):
+    """
+    in time print multiple lines: first indent with indent blanks, then every line is indented with indent_inner blanks
+    """
+    if message is not None:
+        message = _add_indent(message, indent_inner)
+    it_print(message, indent=indent, device=device, newline=newline)

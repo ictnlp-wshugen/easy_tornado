@@ -36,8 +36,8 @@ class Timer(object):
 
     def __init__(self, debug=False):
         self.debug = debug
-        self.start_ts = self._invalid_ts
-        self.finish_ts = self._invalid_ts
+        self._start_ts = self._invalid_ts
+        self._finish_ts = self._invalid_ts
         self.reset()
 
     def reset(self):
@@ -45,23 +45,31 @@ class Timer(object):
         if self.debug:
             self.display_start('start at: ')
 
+    @property
+    def start_ts(self):
+        return self._start_ts
+
+    @property
+    def finish_ts(self):
+        return self._finish_ts
+
     def start(self):
-        self.start_ts = time.time()
-        self.finish_ts = self._invalid_ts
+        self._start_ts = time.time()
+        self._finish_ts = self._invalid_ts
 
     def finish(self):
-        self.finish_ts = time.time()
+        self._finish_ts = time.time()
 
     def cost(self):
         self._set_finish()
-        return self.finish_ts - self.start_ts
+        return self._finish_ts - self._start_ts
 
     def display_start(self, msg):
-        Timer._display_datetime(self.start_ts, msg)
+        Timer._display_datetime(self._start_ts, msg)
 
     def display_finish(self, msg):
         self._set_finish()
-        Timer._display_datetime(self.finish_ts, msg)
+        Timer._display_datetime(self._finish_ts, msg)
 
     def display_cost(self, msg=None):
         cost = self.cost()
@@ -73,7 +81,7 @@ class Timer(object):
         it_print('cost %d seconds' % cost)
 
     def _set_finish(self):
-        if self.finish_ts == self._invalid_ts:
+        if self._finish_ts == self._invalid_ts:
             self.finish()
 
     @staticmethod
