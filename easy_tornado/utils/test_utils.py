@@ -6,39 +6,27 @@ from __future__ import print_function
 
 import json
 
+from .log_utils import it_print
 from .time_utils import Timer
 from .web_utils import request
 
 
-# 为非首行添加空格
-def _add_indent(lines, space_cnt):
-    s = lines.split('\n')
-    # don't do anything for single-line stuff
-    if len(s) == 1:
-        return lines
-    first = s.pop(0)
-    s = [(space_cnt * ' ') + line for line in s]
-    s = '\n'.join(s)
-    s = first + '\n' + s
-    return s
-
-
 # 缩进打印
 def print_indent(message):
-    print(_add_indent(message, 2))
+    it_print(message, indent=2)
 
 
 # 以某个消息为前缀打印
 def print_prefix(subject, msg=''):
     if len(msg) != 0:
         subject = msg + ' ' + subject
-    print(subject)
+    it_print(subject)
 
 
 # 打印字典
 def print_dict(data, msg=''):
     if len(msg) != 0:
-        print(msg)
+        it_print(msg)
     for key in data:
         value = data[key]
         # 参数打印格式
@@ -48,7 +36,7 @@ def print_dict(data, msg=''):
 
 # 将字典以json格式打印
 def print_dict_json(data_dict):
-    print(json.dumps(data_dict, indent=2, sort_keys=True, ensure_ascii=False))
+    it_print(json.dumps(data_dict, indent=2, sort_keys=True, ensure_ascii=False))
 
 
 # 打印json
@@ -80,7 +68,7 @@ class HttpTest(object):
         timer.display_start("request at: ")
 
         # 打印请求数据
-        print("request:")
+        it_print("request:")
         if len(data) != 0:
             print_dict_json(data)
 
@@ -89,13 +77,13 @@ class HttpTest(object):
         timer.finish()
 
         # 打印结果
-        print("response:")
+        it_print("response:")
         print_json(res)
 
         # 结束时间
         timer.display_finish("finished at: ")
-        print("time cost: %d s" % timer.cost())
+        it_print("time cost: %d s" % timer.cost())
 
-        print()
+        it_print()
 
         return res

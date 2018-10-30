@@ -6,6 +6,8 @@ from __future__ import division
 
 import time
 
+from .log_utils import it_print
+
 
 # 获取当前时间戳
 def current_timestamp():
@@ -68,7 +70,7 @@ class Timer(object):
             prefix = 'Job [%s] ' % msg
         self.display_start(prefix + 'start at: ')
         self.display_finish(prefix + 'finished at: ')
-        print('cost %d seconds' % cost)
+        it_print('cost %d seconds' % cost)
 
     def _set_finish(self):
         if self.finish_ts == self._invalid_ts:
@@ -78,5 +80,7 @@ class Timer(object):
     def _display_datetime(_ts, _msg):
         _tmp_msg = current_datetime(_ts)
         if _msg:
+            if not _msg.endswith(' '):
+                _msg += ' '
             _tmp_msg = _msg + _tmp_msg
-        print(_tmp_msg)
+        it_print(_tmp_msg)

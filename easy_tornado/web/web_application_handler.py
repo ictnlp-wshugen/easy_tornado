@@ -7,6 +7,7 @@ import json
 from tornado.httpclient import AsyncHTTPClient
 from tornado.web import RequestHandler, asynchronous
 
+from easy_tornado.utils.log_utils import it_print
 from easy_tornado.utils.time_utils import current_datetime
 from easy_tornado.utils.time_utils import current_timestamp
 
@@ -47,7 +48,7 @@ class WebApplicationHandler(RequestHandler):
             params = json.loads(self.request.body)
             if self.debug:
                 params['request_time'] = current_datetime()
-                self.pretty_print(params)
+                self.pretty_it_print(params)
             # 加入私有属性作为数据，否则params为空，被if not判断为真
             params['_timestamp'] = current_timestamp()
         except ValueError:
@@ -85,7 +86,7 @@ class WebApplicationHandler(RequestHandler):
 
     def __output_response(self, data):
         if self.debug:
-            print(data)
+            it_print(data)
         self.write(data)
         self.finish()
 
@@ -93,7 +94,7 @@ class WebApplicationHandler(RequestHandler):
     def response(self, response):
         try:
             if self.debug:
-                print(response.body)
+                it_print(response.body)
             result = json.loads(response.body)
         except ValueError:
             return self.error_response(error_no=self.system_error)
@@ -103,5 +104,5 @@ class WebApplicationHandler(RequestHandler):
         pass
 
     @staticmethod
-    def pretty_print(data):
-        print(json.dumps(data, ensure_ascii=False))
+    def pretty_it_print(data):
+        it_print(json.dumps(data, ensure_ascii=False))
