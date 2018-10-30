@@ -28,7 +28,7 @@ def _add_indent(lines, space_cnt):
     return s
 
 
-def it_print(message, indent=0, device=1, newline=True):
+def it_print(message=None, indent=0, device=1, newline=True):
     """
     in time print: print one line to console immediately
 
@@ -44,6 +44,8 @@ def it_print(message, indent=0, device=1, newline=True):
     :param newline: whether to append a new line, default True
     :type newline: bool
     """
+    if message is None:
+        message = ''
     message = ' ' * indent + message
 
     if device == 2:
@@ -57,7 +59,7 @@ def it_print(message, indent=0, device=1, newline=True):
     device.flush()
 
 
-def it_prints(message, indent=0, indent_inner=2, device=1, newline=True):
+def it_prints(message=None, indent=0, indent_inner=2, device=1, newline=True):
     """
     in time print multiple lines: first indent with indent blanks, then every line is indented with indent_inner blanks
     """
