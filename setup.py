@@ -6,7 +6,7 @@
 from setuptools import setup
 
 setup(name='easy_tornado',
-      version='0.4',
+      version='0.4.1',
       description='A tornado based web framework package',
       author='empire (Wang Shugen)',
       author_email='wsg1107556314@163.com',
