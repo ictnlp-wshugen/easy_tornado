@@ -28,6 +28,10 @@ class WebApplicationHandler(RequestHandler):
     not_found = 4004
     error_mapper[not_found] = 'not found'
 
+    # 操作不支持
+    not_support = 5001
+    error_mapper[not_support] = 'not support'
+
     # 本系统错误
     system_error = 5002
     error_mapper[system_error] = 'system error'
