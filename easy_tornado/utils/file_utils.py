@@ -49,7 +49,7 @@ def get_file_lines(_file):
 
 # 移除文件
 def remove_file(_file):
-    shutil.rmtree(_file)
+    shutil.rmtree(_file, ignore_errors=True)
 
 
 # 准备目录

@@ -19,8 +19,10 @@ def deprecated(new_fn):
         assert isinstance(fn, Callable)
 
         def wrapper(*args, **kwargs):
+            message = '{} will be deprecated in the future, ' \
+                      'use {} instead'.format(fn.__name__, new_fn.__name__)
             from warnings import warn
-            warn('{} will be deprecated in the future, use {} instead'.format(fn.__name__, new_fn.__name__))
+            warn(message)
             fn(*args, **kwargs)
 
         return wrapper
