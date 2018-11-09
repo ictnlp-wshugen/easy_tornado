@@ -75,10 +75,10 @@ class Timer(object):
         cost = self.cost()
         prefix = ''
         if msg:
-            prefix = 'Job [%s] ' % msg
+            prefix = 'Job [{}] '.format(msg)
         self.display_start(prefix + 'start at: ')
         self.display_finish(prefix + 'finished at: ')
-        it_print('cost %d seconds' % cost)
+        it_print('cost {} seconds'.format(cost))
 
     def _set_finish(self):
         if self._finish_ts == self._invalid_ts:

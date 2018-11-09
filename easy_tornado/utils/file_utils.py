@@ -10,6 +10,8 @@ import tempfile
 
 from decorator import contextmanager
 
+from ..functional import deprecated
+
 
 # 文件绝对路径
 def abspath(file_obj):
@@ -47,7 +49,7 @@ def get_file_lines(_file):
 
 # 移除文件
 def remove_file(_file):
-    os.system(r"rm -rf %s" % _file)
+    shutil.rmtree(_file)
 
 
 # 准备目录
@@ -57,13 +59,17 @@ def create_if_not_exist_path(target_path):
 
 
 # 拼接路径
-def format_path(base_path, sub_path):
+def concat_path(base_path, sub_path):
     return os.path.join(base_path, sub_path)
 
 
+cp = concat_path
+
+
 # 拼接路径
-concat_path = format_path
-cp = format_path
+@deprecated(new_fn=concat_path)
+def format_path(base_path, sub_path):
+    concat_path(base_path, sub_path)
 
 
 # 追加文件

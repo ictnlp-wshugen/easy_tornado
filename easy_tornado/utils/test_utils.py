@@ -9,6 +9,7 @@ import json
 from .log_utils import it_print
 from .time_utils import Timer
 from .web_utils import request
+from ..functional import deprecated
 
 
 # 缩进打印
@@ -30,60 +31,72 @@ def print_dict(data, msg=''):
     for key in data:
         value = data[key]
         # 参数打印格式
-        item = '%s => %s'
-        print_indent(item % (key, value))
+        item = '{} => {}'
+        print_indent(item.format(key, value))
+
+
+# 以json形式打印
+def json_print(data):
+    it_print(json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False))
 
 
 # 将字典以json格式打印
+@deprecated(new_fn=json_print)
 def print_dict_json(data_dict):
-    it_print(json.dumps(data_dict, indent=2, sort_keys=True, ensure_ascii=False))
+    json_print(data_dict)
 
 
 # 打印json
 def print_json(json_string):
-    print_dict_json(json.loads(json_string))
+    json_print(json.loads(json_string))
 
 
 # Http API测试工具
 class HttpTest(object):
+    debug = True
 
     def __init__(self, url=None):
         self.url = url
 
     def set_url(self, host, context, port=80, https=False):
         schema = 'https' if https else 'http'
-        self.url = '%s://%s:%d%s' % (schema, host, port, context)
+        self.url = '{}://{}:{}{}'.format(schema, host, port, context)
 
-    def request(self, uri, data=None, as_json=True):
+    def request_url(self, url, data=None, as_json=True):
         # 请求地址
-        request_url = '%s%s' % (self.url, uri)
-        print_prefix(request_url, "url:")
+        request_url = url
+        if self.debug:
+            print_prefix(request_url, "url:")
 
         # 请求数据
         if data is None:
             data = {}
 
-        # 起始时间
-        timer = Timer()
-        timer.display_start("request at: ")
+        if self.debug:
+            # 起始时间
+            timer = Timer()
+            timer.display_start("request at: ")
 
-        # 打印请求数据
-        it_print("request:")
-        if len(data) != 0:
-            print_dict_json(data)
+            # 打印请求数据
+            it_print("request:")
+            if len(data) != 0:
+                print_dict_json(data)
 
         # 发起请求
         res = request(request_url, data, as_json)
-        timer.finish()
 
-        # 打印结果
-        it_print("response:")
-        print_json(res)
+        if self.debug:
+            timer.finish()
+            # 打印结果
+            it_print("response:")
+            print_json(res)
 
-        # 结束时间
-        timer.display_finish("finished at: ")
-        it_print("time cost: %d s" % timer.cost())
+            # 结束时间
+            timer.display_finish("finished at: ")
+            it_print("time cost: {} s".format(timer.cost()))
 
-        it_print()
-
+            it_print()
         return res
+
+    def request(self, uri, data=None, as_json=True):
+        return self.request_url('{}{}'.format(self.url, uri), data, as_json)

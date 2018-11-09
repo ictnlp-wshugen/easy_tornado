@@ -3,3 +3,5 @@ build/
 dist/
 *.pyc
 easy_tornado.egg-info/
+install.txt
+release3
