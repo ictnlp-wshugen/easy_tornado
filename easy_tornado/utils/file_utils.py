@@ -72,6 +72,12 @@ def format_path(base_path, sub_path):
     concat_path(base_path, sub_path)
 
 
+# 修正路径(将holder中key对应的值增加base_path)
+def refine_path(base_path, holder, key):
+    assert key in holder
+    holder[key] = concat_path(base_path, holder[key])
+
+
 # 追加文件
 def append_to_file(_append_to_file_path, _append_from_file_path):
     if not file_exists(_append_to_file_path):
