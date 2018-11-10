@@ -69,7 +69,7 @@ cp = concat_path
 # 拼接路径
 @deprecated(new_fn=concat_path)
 def format_path(base_path, sub_path):
-    concat_path(base_path, sub_path)
+    return concat_path(base_path, sub_path)
 
 
 # 修正路径(将holder中key对应的值增加base_path)
