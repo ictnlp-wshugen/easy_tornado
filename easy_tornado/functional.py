@@ -23,7 +23,8 @@ def deprecated(new_fn):
                       'use {} instead'.format(fn.__name__, new_fn.__name__)
             from warnings import warn
             warn(message)
-            fn(*args, **kwargs)
+            
+            return fn(*args, **kwargs)
 
         return wrapper
 
