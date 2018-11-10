@@ -62,7 +62,7 @@ class HttpTest(object):
         schema = 'https' if https else 'http'
         self.url = '{}://{}:{}{}'.format(schema, host, port, context)
 
-    def request_url(self, url, data=None, as_json=True):
+    def request_url(self, url, data=None, as_json=True, timeout=None):
         # 请求地址
         request_url = url
         if self.debug:
@@ -83,7 +83,7 @@ class HttpTest(object):
                 print_dict_json(data)
 
         # 发起请求
-        res = request(request_url, data, as_json)
+        res = request(request_url, data, as_json, timeout)
 
         if self.debug:
             timer.finish()
@@ -98,5 +98,5 @@ class HttpTest(object):
             it_print()
         return res
 
-    def request(self, uri, data=None, as_json=True):
-        return self.request_url('{}{}'.format(self.url, uri), data, as_json)
+    def request(self, uri, data=None, as_json=True, timeout=None):
+        return self.request_url('{}{}'.format(self.url, uri), data, as_json, timeout)
