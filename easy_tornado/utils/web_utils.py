@@ -27,11 +27,7 @@ def request(request_url, data=None, as_json=True, timeout=None):
         req = urllib2.Request(request_url)
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
         wrapped_data = json.dumps(data, ensure_ascii=False) if as_json else urllib.urlencode(data)
-        # noinspection PyBroadException
-        try:
-            response = opener.open(req, wrapped_data, **kwargs)
-        except Exception:
-            raise TimeoutError
+        response = opener.open(req, wrapped_data, **kwargs)
         result = response.read()
     else:
         import urllib3
@@ -40,11 +36,6 @@ def request(request_url, data=None, as_json=True, timeout=None):
             kwargs['fields'] = data
         else:
             kwargs['body'] = urllib.urlencode(data)
-        # noinspection PyBroadException
-        try:
-            response = pool.request('POST', request_url, **kwargs)
-        except Exception:
-            raise TimeoutError
-
+        response = pool.request('POST', request_url, **kwargs)
         result = response.data
     return result
