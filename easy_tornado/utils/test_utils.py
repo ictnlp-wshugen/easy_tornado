@@ -42,7 +42,7 @@ def json_print(data):
 
 # 将字典以json格式打印
 @deprecated(new_fn=json_print)
-def print_dict_json(data_dict):
+def json_print(data_dict):
     json_print(data_dict)
 
 
@@ -80,7 +80,7 @@ class HttpTest(object):
             # 打印请求数据
             it_print("request:")
             if len(data) != 0:
-                print_dict_json(data)
+                json_print(data)
 
         # 发起请求
         res = request(request_url, data, as_json, timeout)
