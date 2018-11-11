@@ -42,7 +42,7 @@ def json_print(data):
 
 # 将字典以json格式打印
 @deprecated(new_fn=json_print)
-def json_print(data_dict):
+def print_dict_json(data_dict):
     json_print(data_dict)
 
 
