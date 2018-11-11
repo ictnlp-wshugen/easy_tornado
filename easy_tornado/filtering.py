@@ -2,6 +2,7 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/11 12:42
+from six import exec_
 
 
 def filter_dict_object(data, *keys, **kwargs):
@@ -28,11 +29,25 @@ def filter_dict_object(data, *keys, **kwargs):
     return result
 
 
-def filter_module_methods(module_name, filter_fn):
+def filter_module_methods(module_object, filter_fn=None):
     """
     列出模块方法
-    :param module_name: 模块名称
+    :param module_object: 模块对象
     :param filter_fn: 过滤函数 lambda 方法名: bool
     :return: 满足条件的方法列表
     """
-    return list(filter(filter_fn, dir(module_name)))
+
+    def _filter_fn_default(x):
+        return x.strip() != '' and x[0].islower() and not (x.startswith('_') or x.startswith('__'))
+
+    def _filter_fn_method(x, _):
+        exec_('\n'.join(['import sys', 'from typing import Callable']))
+        return eval('isinstance(sys.modules[_.__name__].{}, Callable)'.format(x))
+
+    if filter_fn is None:
+        filter_fn = _filter_fn_default
+
+    def fn(x):
+        return filter_fn(x) and _filter_fn_method(x, module_object)
+
+    return list(filter(fn, dir(module_object)))
