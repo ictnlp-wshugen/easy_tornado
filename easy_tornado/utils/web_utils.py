@@ -36,7 +36,8 @@ def request(request_url, data=None, as_json=True, timeout=None):
             response = opener.open(req, data, **kwargs)
             result = response.read()
         except URLError as e:
-            if str(e.reason) == '[Errno 61] Connection refused':
+            # e.reason: 输出如，[Errno 61] Connection refused，但Mac和Unix的Errno不一样
+            if str(e.reason).index('Connection refused'):
                 raise TimeoutError
         except StandardError as e:
             if e.message == 'timed out':
@@ -66,4 +67,4 @@ def request(request_url, data=None, as_json=True, timeout=None):
 
 
 if __name__ == '__main__':
-    request('http://127.0.0.1:20180/wpynmt/instance/list.json', timeout=2)
+    request('http://127.0.0.1:60001/controller.json', timeout=2)
