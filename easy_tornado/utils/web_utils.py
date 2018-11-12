@@ -6,6 +6,8 @@ import json
 import urllib
 
 import six
+from six.moves import xrange
+from typing import Iterable
 
 
 class TimeoutError(Exception):
@@ -64,6 +66,41 @@ def request(request_url, data=None, as_json=True, timeout=None):
             if isinstance(e, ReadTimeoutError):
                 raise TimeoutError
     return result
+
+
+def fetch_available_port(host='127.0.0.1', used_ports=None, port_range=None):
+    """
+    获取可用的端口号
+    :param host: 主机
+    :param used_ports: 端口
+    :param port_range: 端口范围
+    :return: 端口号
+    """
+    import socket
+
+    if used_ports is None:
+        used_ports = []
+
+    if port_range is None:
+        port_range = xrange(50000, 63000)
+    else:
+        if not isinstance(port_range, Iterable):
+            raise ValueError('port_range should be of Iterable type, but got {}'.format(type(port_range)))
+
+    for port in port_range:
+        if port in used_ports:
+            continue
+
+        try:
+            sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sk.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sk.bind((host, port))
+            sk.close()
+            return port
+        except StandardError as e:
+            if str(e.args[1]) == 'Address already in use':
+                continue
+    raise StandardError('Can\'t get any available port')
 
 
 if __name__ == '__main__':
