@@ -89,7 +89,10 @@ class HttpTest(object):
             timer.finish()
             # 打印结果
             it_print("response:")
-            print_json(res)
+            if res is not None:
+                print_json(res)
+            else:
+                it_print()
 
             # 结束时间
             timer.display_finish("finished at: ")
