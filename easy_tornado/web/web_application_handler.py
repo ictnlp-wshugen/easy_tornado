@@ -4,12 +4,11 @@
 # date: 2018年8月23日 14:26:49
 import json
 
-from tornado.httpclient import AsyncHTTPClient
-from tornado.web import RequestHandler, asynchronous
-
 from easy_tornado.utils.log_utils import it_print
 from easy_tornado.utils.time_utils import current_datetime
 from easy_tornado.utils.time_utils import current_timestamp
+from tornado.httpclient import AsyncHTTPClient
+from tornado.web import RequestHandler, asynchronous
 
 
 class WebApplicationHandler(RequestHandler):
@@ -49,7 +48,8 @@ class WebApplicationHandler(RequestHandler):
     # 加载为json数据
     def load_request_data(self):
         try:
-            params = json.loads(self.request.body)
+            body = self.request.body
+            params = json.loads(self.request.body) if body != '' else dict()
             if self.debug:
                 params['request_time'] = current_datetime()
                 self.pretty_it_print(params)
