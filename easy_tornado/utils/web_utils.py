@@ -6,7 +6,6 @@ import json
 import urllib
 
 import six
-from urllib3.exceptions import ReadTimeoutError
 
 
 class TimeoutError(Exception):
@@ -22,6 +21,7 @@ def request(request_url, data=None, as_json=True, timeout=None):
     if timeout is not None:
         kwargs['timeout'] = timeout
 
+    result = None
     if six.PY2:
         from urllib2 import Request
         from urllib2 import build_opener
@@ -34,17 +34,19 @@ def request(request_url, data=None, as_json=True, timeout=None):
             data = json.dumps(data, ensure_ascii=False) if as_json else urllib.urlencode(data)
         try:
             response = opener.open(req, data, **kwargs)
+            result = response.read()
         except URLError as e:
             if str(e.reason) == '[Errno 61] Connection refused':
                 raise TimeoutError
         except StandardError as e:
             if e.message == 'timed out':
                 raise TimeoutError
-        result = response.read()
     else:
         from urllib3 import PoolManager
         from urllib3.exceptions import MaxRetryError
         from urllib3.exceptions import NewConnectionError
+        from urllib3.exceptions import ReadTimeoutError
+        from urllib3.exceptions import RequestError
 
         pool = PoolManager()
         if data is not None:
@@ -54,14 +56,14 @@ def request(request_url, data=None, as_json=True, timeout=None):
                 kwargs['body'] = urllib.urlencode(data)
         try:
             response = pool.request('POST', request_url, **kwargs)
-        except MaxRetryError as e:
-            if isinstance(e.reason, NewConnectionError):
+            result = response.data
+        except RequestError as e:
+            if isinstance(e, MaxRetryError) and isinstance(e.reason, NewConnectionError):
                 raise TimeoutError
-        except ReadTimeoutError:
-            raise TimeoutError
-        result = response.data
+            if isinstance(e, ReadTimeoutError):
+                raise TimeoutError
     return result
 
 
 if __name__ == '__main__':
-    request('http://127.0.0.1:20181/wpynmt/instance/list.json', timeout=2)
+    request('http://127.0.0.1:20180/wpynmt/instance/list.json', timeout=2)
