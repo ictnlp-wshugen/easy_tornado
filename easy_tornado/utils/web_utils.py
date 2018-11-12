@@ -37,7 +37,7 @@ def request(request_url, data=None, as_json=True, timeout=None):
             result = response.read()
         except URLError as e:
             # e.reason: 输出如，[Errno 61] Connection refused，但Mac和Unix的Errno不一样
-            if str(e.reason).index('Connection refused'):
+            if str(e.reason).find('Connection refused') != -1:
                 raise TimeoutError
         except StandardError as e:
             if e.message == 'timed out':
