@@ -2,6 +2,7 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018年8月23日 14:26:49
+import hashlib
 import json
 import os
 import shutil
@@ -88,6 +89,24 @@ def refine_path(base_path, holder, key):
     if is_abspath(holder[key]):
         return
     holder[key] = concat_path(base_path, holder[key])
+
+
+def file_md5sum(file_path):
+    """
+    计算文件的MD5值
+    :param file_path: 文件路径
+    :return: 文件MD5
+    """
+    if not os.path.isfile(file_path):
+        return
+    ctx = hashlib.md5()
+    with open(file_path, 'rb') as fp:
+        while True:
+            b = fp.read(8096)
+            if not b:
+                break
+            ctx.update(b)
+    return ctx.hexdigest()
 
 
 # 追加文件
