@@ -46,7 +46,7 @@ def it_print(message=None, indent=0, device=1, newline=True):
     """
     if message is None:
         message = ''
-    message = ' ' * indent + message
+    message = ' ' * indent + str(message)
 
     if device == 2:
         device = sys.stderr
