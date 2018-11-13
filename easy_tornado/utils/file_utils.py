@@ -79,7 +79,12 @@ def is_abspath(file_path):
 
 # 修正路径(将holder中key对应的值增加base_path)
 def refine_path(base_path, holder, key):
-    assert key in holder
+    if isinstance(holder, dict):
+        assert key in holder
+    elif isinstance(holder, list):
+        assert isinstance(key, int) and 0 <= key < len(holder)
+    else:
+        raise TypeError('holder should be either dict or list, but got {}'.format(type(holder)))
     if is_abspath(holder[key]):
         return
     holder[key] = concat_path(base_path, holder[key])
