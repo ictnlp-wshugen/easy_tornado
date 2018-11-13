@@ -4,11 +4,19 @@
 # date: 2018年8月23日 14:26:49
 import json
 
+import six
 from easy_tornado.utils.log_utils import it_print
 from easy_tornado.utils.time_utils import current_datetime
 from easy_tornado.utils.time_utils import current_timestamp
+from six.moves import reload_module
 from tornado.httpclient import AsyncHTTPClient
 from tornado.web import RequestHandler, asynchronous
+
+if six.PY2:
+    import sys
+
+    reload_module(sys)
+    sys.setdefaultencoding('utf-8')
 
 
 class WebApplicationHandler(RequestHandler):
