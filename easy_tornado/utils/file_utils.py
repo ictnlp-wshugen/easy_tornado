@@ -72,9 +72,16 @@ def format_path(base_path, sub_path):
     return concat_path(base_path, sub_path)
 
 
+# 判断是否为绝对路径
+def is_abspath(file_path):
+    return file_path is not None and isinstance(file_path, str) and file_path.startswith('/')
+
+
 # 修正路径(将holder中key对应的值增加base_path)
 def refine_path(base_path, holder, key):
     assert key in holder
+    if is_abspath(holder[key]):
+        return
     holder[key] = concat_path(base_path, holder[key])
 
 
