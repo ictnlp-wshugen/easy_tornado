@@ -9,6 +9,15 @@ import six
 if six.PY2:
     C_StandardError = StandardError
     C_MAXINT = sys.maxint
+
 if six.PY3:
     C_StandardError = BaseException
     C_MAXINT = sys.maxsize
+
+
+def utf8decode(text):
+    return text.decode('utf-8') if six.PY2 else text
+
+
+def utf8encode(text):
+    return text.encode('utf-8') if six.PY2 else text
