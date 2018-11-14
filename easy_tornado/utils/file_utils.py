@@ -57,6 +57,9 @@ def remove_file(file_path, ignore_errors=True):
     移除文件
     :param file_path: 文件路径
     """
+    if not os.path.exists(file_path):
+        return
+
     if os.path.isfile(file_path):
         os.remove(file_path)
     elif os.path.isdir(file_path):
