@@ -3,7 +3,7 @@
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/6 14:05
 import signal
-import subprocess
+from os import kill
 
 from .file_utils import file_exists
 from .file_utils import load_file_contents
