@@ -31,15 +31,28 @@ def deprecated(new_fn):
     return function_wrapper
 
 
-def async_call(fn):
+def async_call(daemon=False, name=None):
     """
     异步调用 decorator
-    :param fn: 函数
+    :param daemon: 是否为守护进程
+    :param name: 线程名称
     :return 包装函数
     """
-    assert isinstance(fn, Callable)
 
-    def wrapper(*args, **kwargs):
-        Thread(target=fn, args=args, kwargs=kwargs).start()
+    def function_wrapper(fn):
+        """
+        函数修饰器
+        :param fn: 被调用函数
+        """
+        assert isinstance(fn, Callable)
 
-    return wrapper
+        def wrapper(*args, **kwargs):
+            t = Thread(target=fn, args=args, kwargs=kwargs)
+            t.setDaemon(daemon)
+            if name is not None:
+                t.setName(name)
+            t.start()
+
+        return wrapper
+
+    return function_wrapper
