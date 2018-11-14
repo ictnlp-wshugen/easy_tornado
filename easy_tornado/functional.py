@@ -7,10 +7,11 @@ from threading import Thread
 from typing import Callable
 
 
-def deprecated(new_fn):
+def deprecated(new_fn, version=None):
     """
     标记为弃用 decorator
     :param new_fn: 函数
+    :param version: 被移除版本
     :return 包装函数
     """
     assert isinstance(new_fn, Callable)
@@ -19,8 +20,21 @@ def deprecated(new_fn):
         assert isinstance(fn, Callable)
 
         def wrapper(*args, **kwargs):
-            message = '{} will be deprecated in the future, ' \
-                      'use {} instead'.format(fn.__name__, new_fn.__name__)
+            params = {
+                'newline': '\n',
+                'fn_module': fn.__module__,
+                'fn_name': fn.__name__,
+                'new_fn_module': new_fn.__module__,
+                'new_fn_name': new_fn.__name__,
+                'future': 'the future' if version is None else 'version {}'.format(str(version))
+            }
+            message = '{newline}' \
+                      'some of your code has used "{fn_name}" from {fn_module},' \
+                      '{newline}' \
+                      'this is marked as deprecated in current version, ' \
+                      'and maybe will be removed in {future}, ' \
+                      '{newline}' \
+                      'use "{new_fn_name}" from {new_fn_module} instead'.format(**params)
             from warnings import warn
             warn(message)
 
