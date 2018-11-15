@@ -25,7 +25,7 @@ def shell_invoke(command, **kwargs):
     """
     log_prefix = kwargs.pop('log_prefix', None)
     debug = kwargs.pop('debug', True)
-    detach = kwargs.pop('detach', False)
+    daemon = kwargs.pop('daemon', False)
 
     command = command.strip()
     if command == '' or command.startswith(NOHUP) or command.endswith(BG_MARK):
@@ -37,7 +37,7 @@ def shell_invoke(command, **kwargs):
         stdout = io.open('{}.out'.format(log_prefix), mode='w', encoding='utf-8')
         stderr = stdout if debug else io.open('{}.err'.format(log_prefix), mode='w', encoding='utf-8')
 
-    if detach:
+    if daemon:
         command = '{} {} {}'.format(NOHUP, command, BG_MARK)
 
     try:
@@ -71,5 +71,6 @@ def python_invoke(command, **kwargs):
             raise ValueError('only support python2 and python3')
         interpreter = 'python{}'.format(version)
 
-    command = '{} -u {}'.format(python, command)
+    command = '{} -u {}'.format(interpreter, command)
+    print(command)
     return shell_invoke(command, **kwargs)
