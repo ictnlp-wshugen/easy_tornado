@@ -54,7 +54,7 @@ def python_invoke(command, **kwargs):
     :param kwargs: 关键字参数
 
     Args:
-        version: Python版本号, 默认为2
+        version: Python版本号, 默认为3
         log_prefix: 日志路径前缀
         debug: 是否为调试模式
         daemon: 是否在主线程退出之后仍然运行
@@ -67,7 +67,7 @@ def python_invoke(command, **kwargs):
 
     interpreter = kwargs.pop('interpreter', None)
     if interpreter is None:
-        version = kwargs.pop('version', 2)
+        version = kwargs.pop('version', 3)
         if not (version == 2 or version == 3):
             raise ValueError('only support python2 and python3')
         interpreter = 'python{}'.format(version)
