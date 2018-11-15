@@ -11,7 +11,18 @@ if six.PY2:
     C_MAXINT = sys.maxint
 
 if six.PY3:
-    C_StandardError = BaseException
+    class StandardError(Exception):
+
+        def __init__(self, *args, **kwargs):
+            self._message = args[0]
+            super(StandardError, self).__init__(*args, **kwargs)
+
+        @property
+        def message(self):
+            return self._message
+
+
+    C_StandardError = StandardError
     C_MAXINT = sys.maxsize
 
 
