@@ -19,7 +19,8 @@ def filter_dict_object(data, *keys, **kwargs):
     keep = False
     if 'keep' in kwargs and kwargs.pop('keep'):
         keep = True
-    for key in data.keys():
+    all_keys = list(data.keys())
+    for key in all_keys:
         if keep:
             if key not in keys:
                 result[key] = data.pop(key)
