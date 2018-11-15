@@ -33,7 +33,7 @@ def request(request_url, data=None, as_json=True, timeout=None):
         req = Request(request_url)
         opener = build_opener(HTTPCookieProcessor())
         if data is not None:
-            data = json.dumps(data, ensure_ascii=False) if as_json else urllib.urlencode(data)
+            data = json.dumps(data, ensure_ascii=False).encode('utf-8') if as_json else urllib.urlencode(data)
         try:
             response = opener.open(req, data, **kwargs)
             result = response.read()
@@ -54,9 +54,9 @@ def request(request_url, data=None, as_json=True, timeout=None):
         pool = PoolManager()
         if data is not None:
             if as_json:
-                kwargs['fields'] = data
+                kwargs['body'] = json.dumps(data, ensure_ascii=False).encode('utf-8')
             else:
-                kwargs['body'] = urllib.urlencode(data)
+                kwargs['fields'] = data
         try:
             response = pool.request('POST', request_url, **kwargs)
             result = response.data
