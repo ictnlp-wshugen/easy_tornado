@@ -6,6 +6,8 @@ from threading import Thread
 
 from typing import Callable
 
+from .utils.time_utils import Timer
+
 
 def deprecated(new_fn=None, version=None):
     """
@@ -75,3 +77,21 @@ def async_call(daemon=False, name=None):
         return wrapper
 
     return function_wrapper
+
+
+def timed(fn):
+    """
+    标记为统计运行时间的函数
+    :param fn: 被测函数
+    """
+    assert isinstance(fn, Callable)
+
+    def wrapper(*args, **kwargs):
+        params = {'fn_name': fn.__name__}
+        timer = Timer()
+        timer.display_start('{fn_name} start at'.format(**params))
+        result = fn(*args, **kwargs)
+        timer.display_finish('{fn_name} finished at'.format(**params))
+        return result
+
+    return wrapper
