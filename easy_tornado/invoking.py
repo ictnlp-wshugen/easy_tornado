@@ -48,24 +48,28 @@ def shell_invoke(command, **kwargs):
 
 def python_invoke(command, **kwargs):
     """
-        Python命令调用
-        :param command: 命令
-        :param kwargs: 关键字参数
+    Python命令调用
+    :param command: 命令
+    :param kwargs: 关键字参数
 
-        Args:
-            version: Python版本号, 默认为2
-            log_prefix: 日志路径前缀
-            debug: 是否为调试模式
-            daemon: 是否在主线程退出之后仍然运行
-        :return: 返回码
-        """
+    Args:
+        version: Python版本号, 默认为2
+        log_prefix: 日志路径前缀
+        debug: 是否为调试模式
+        daemon: 是否在主线程退出之后仍然运行
+        python: Python命令
+    :return: 返回码
+    """
     command = command.strip()
     if command == '' or command.startswith('python'):
         raise ValueError('python command should be a string not start with python')
-    version = kwargs.pop('version', 2)
-    if not (version == 2 or version == 3):
-        raise ValueError('only support python2 and python3')
 
-    interpreter = 'python' if version == 2 else 'python3'
-    command = '{} -u {}'.format(interpreter, command)
+    python = kwargs.pop('python', None)
+    if python is None:
+        version = kwargs.pop('version', 2)
+        if not (version == 2 or version == 3):
+            raise ValueError('only support python2 and python3')
+        python = 'python{}'.format(version)
+
+    command = '{} -u {}'.format(python, command)
     return shell_invoke(command, **kwargs)
