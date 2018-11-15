@@ -57,19 +57,19 @@ def python_invoke(command, **kwargs):
         log_prefix: 日志路径前缀
         debug: 是否为调试模式
         daemon: 是否在主线程退出之后仍然运行
-        python: Python命令
+        interpreter: Pyhton解释器
     :return: 返回码
     """
     command = command.strip()
     if command == '' or command.startswith('python'):
         raise ValueError('python command should be a string not start with python')
 
-    python = kwargs.pop('python', None)
-    if python is None:
+    interpreter = kwargs.pop('interpreter', None)
+    if interpreter is None:
         version = kwargs.pop('version', 2)
         if not (version == 2 or version == 3):
             raise ValueError('only support python2 and python3')
-        python = 'python{}'.format(version)
+        interpreter = 'python{}'.format(version)
 
     command = '{} -u {}'.format(python, command)
     return shell_invoke(command, **kwargs)
