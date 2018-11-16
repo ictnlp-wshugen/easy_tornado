@@ -58,7 +58,7 @@ def python_invoke(command, **kwargs):
         log_prefix: 日志路径前缀
         debug: 是否为调试模式
         daemon: 是否在主线程退出之后仍然运行
-        interpreter: Pyhton解释器
+        interpreter: Python解释器
     :return: 返回码
     """
     command = command.strip()
@@ -74,3 +74,13 @@ def python_invoke(command, **kwargs):
 
     command = '{} -u {}'.format(interpreter, command)
     return shell_invoke(command, **kwargs)
+
+
+def python2_invoke(command, **kwargs):
+    kwargs['version'] = 2
+    return python_invoke(command, **kwargs)
+
+
+def python3_invoke(command, **kwargs):
+    kwargs['version'] = 3
+    return python_invoke(command, **kwargs)
