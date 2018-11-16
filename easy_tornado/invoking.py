@@ -4,6 +4,7 @@
 # date: 2018/11/14 16:30
 import io
 import subprocess
+import warnings
 
 from .utils.file_utils import write_file_contents
 
@@ -47,6 +48,19 @@ def shell_invoke(command, **kwargs):
         return e.returncode
 
 
+def executable_exists(executable):
+    """
+    检测可执行文件是否存在
+    :param executable: 可执行文件
+    :return: 检测结果, 若存在，返回True, 否则返回False
+    """
+    try:
+        subprocess.check_call('which {}'.format(executable), shell=True)
+    except subprocess.CalledProcessError:
+        return False
+    return True
+
+
 def python_invoke(command, **kwargs):
     """
     Python命令调用
@@ -71,6 +85,16 @@ def python_invoke(command, **kwargs):
         if not (version == 2 or version == 3):
             raise ValueError('only support python2 and python3')
         interpreter = 'python{}'.format(version)
+        if not executable_exists(interpreter):
+            alternative = 'python'
+            params = {
+                'interpreter': interpreter,
+                'alternative': alternative
+            }
+            message = '{interpreter} not exists, so use {alternative} as interpreter, ' \
+                      'ensure that {alternative} is actually the same as {interpreter}'.format(**params)
+            warnings.warn(message)
+            interpreter = 'python'
 
     command = '{} -u {}'.format(interpreter, command)
     return shell_invoke(command, **kwargs)
