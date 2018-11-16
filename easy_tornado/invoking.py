@@ -4,6 +4,7 @@
 # date: 2018/11/14 16:30
 import io
 import subprocess
+import sys
 import warnings
 
 import six
@@ -54,7 +55,7 @@ def executable_exists(executable):
     :return: 检测结果, 若存在，返回True, 否则返回False
     """
     try:
-        subprocess.check_call('which {}'.format(executable), shell=True)
+        subprocess.check_call('which {} >/dev/null'.format(executable), shell=True)
     except subprocess.CalledProcessError:
         return False
     return True
