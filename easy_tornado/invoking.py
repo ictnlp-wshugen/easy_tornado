@@ -44,10 +44,7 @@ def shell_invoke(command, **kwargs):
     if daemon:
         command = '{} {} {}'.format(NOHUP, command, BG_MARK)
 
-    try:
-        return subprocess.check_call(command, shell=True, stdout=stdout, stderr=stderr)
-    except subprocess.CalledProcessError as e:
-        return e.returncode
+    return subprocess.check_call(command, shell=True, stdout=stdout, stderr=stderr)
 
 
 def executable_exists(executable):
