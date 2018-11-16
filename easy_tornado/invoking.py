@@ -6,6 +6,8 @@ import io
 import subprocess
 import warnings
 
+import six
+
 from .utils.file_utils import write_file_contents
 
 NOHUP = 'nohup'
@@ -61,7 +63,7 @@ def executable_exists(executable):
     return True
 
 
-def python_invoke(command, **kwargs):
+def _python_invoke(command, **kwargs):
     """
     Python命令调用
     :param command: 命令
@@ -102,9 +104,12 @@ def python_invoke(command, **kwargs):
 
 def python2_invoke(command, **kwargs):
     kwargs['version'] = 2
-    return python_invoke(command, **kwargs)
+    return _python_invoke(command, **kwargs)
 
 
 def python3_invoke(command, **kwargs):
     kwargs['version'] = 3
-    return python_invoke(command, **kwargs)
+    return _python_invoke(command, **kwargs)
+
+
+python_invoke = python2_invoke if six.PY2 else python3_invoke
