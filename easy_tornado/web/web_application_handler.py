@@ -56,6 +56,13 @@ class WebApplicationHandler(RequestHandler):
     # 作为后台进程运行
     daemon = True
 
+    @staticmethod
+    def setup_config(**kwargs):
+        self = WebApplicationHandler
+        self.debug = kwargs.pop('debug', self.debug)
+        self.devel = kwargs.pop('devel', self.devel)
+        self.daemon = kwargs.pop('daemon', self.daemon)
+
     # 加载为json数据
     def load_request_data(self):
         try:
