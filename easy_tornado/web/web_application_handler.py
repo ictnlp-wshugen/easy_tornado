@@ -58,11 +58,11 @@ class WebApplicationHandler(RequestHandler):
         try:
             body = self.request.body
             params = json.loads(self.request.body) if body != '' else dict()
+            # 加入私有属性作为数据，否则params为空，被if not判断为真
+            params['_uri'] = self.request.uri
             if self.debug:
                 params['request_time'] = current_datetime()
                 self.pretty_it_print(params)
-            # 加入私有属性作为数据，否则params为空，被if not判断为真
-            params['_timestamp'] = current_timestamp()
         except ValueError:
             return False
         return params
