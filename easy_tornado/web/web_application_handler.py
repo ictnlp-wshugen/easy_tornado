@@ -50,6 +50,9 @@ class WebApplicationHandler(RequestHandler):
     # 调试模式
     debug = False
 
+    # 开发模式
+    devel = True
+
     # 作为后台进程运行
     daemon = True
 
