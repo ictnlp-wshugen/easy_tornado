@@ -7,7 +7,6 @@ import json
 import six
 from easy_tornado.utils.log_utils import it_print
 from easy_tornado.utils.time_utils import current_datetime
-from easy_tornado.utils.time_utils import current_timestamp
 from six.moves import reload_module
 from tornado.httpclient import AsyncHTTPClient
 from tornado.web import RequestHandler, asynchronous
