@@ -254,7 +254,7 @@ def write_json_contents(path, data):
     :param path: 文件路径
     :param data: 待写入数据
     """
-    json_str = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    json_str = json.dumps(data, ensure_ascii=False)
     write_file_contents(path, json_str)
 
 
