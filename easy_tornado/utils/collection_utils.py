@@ -5,8 +5,12 @@
 from collections import Iterable
 
 
-# 获取无重复的列表
 def unique_list(items):
+    """
+    获取无重复的列表
+    :param items: 可迭代对象
+    :return: 无重复的list对象
+    """
     if not isinstance(items, Iterable):
         return items
     return list(set(items))

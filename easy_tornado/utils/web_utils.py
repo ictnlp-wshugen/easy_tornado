@@ -17,8 +17,29 @@ class TimeoutError(Exception):
     pass
 
 
-# HTTP请求
+def build_url(host, port, context, uri, schema='http'):
+    """
+    构建url
+    :param host: 主机
+    :param port: 端口
+    :param context: 上下文
+    :param uri: URI路径
+    :param schema: 请求模式
+    :return: 完整的url
+    """
+    assert schema == 'http' or schema == 'https'
+    return '{}://{}:{}{}{}'.format(schema, host, port, context, uri)
+
+
 def request(request_url, data=None, as_json=True, timeout=None):
+    """
+    发送HTTP请求
+    :param request_url: 请求url
+    :param data: 请求数据
+    :param as_json: 是否以json格式发送数据
+    :param timeout: 超时时间
+    :return: 响应结果或超时异常
+    """
     kwargs = dict()
     if timeout is not None:
         kwargs['timeout'] = timeout
@@ -101,7 +122,3 @@ def fetch_available_port(host='127.0.0.1', used_ports=None, port_range=None):
             if str(e.args[1]) == 'Address already in use':
                 continue
     raise StandardError('Can\'t get any available port')
-
-
-if __name__ == '__main__':
-    request('http://127.0.0.1:60001/controller.json', timeout=2)

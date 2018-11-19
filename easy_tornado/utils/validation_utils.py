@@ -5,14 +5,25 @@
 from six.moves import xrange
 
 
-# 检测字典data中是否包含指定的所有键
-def contain_keys(_data, _keys):
-    for _key in _keys:
-        if _key not in _data:
+def contain_keys(data, *keys):
+    """
+    检测字典data中是否包含指定的所有键
+    :param data: 数据
+    :param keys: 键集
+    :return: 若data包含keys中所有键则返回True, 否则返回False
+    """
+    for key in keys:
+        if key not in data:
             return False
     return True
 
 
-# 检测数字是否在范围内
-def in_range(_num, _range_from, _range_to):
-    return _num in xrange(_range_from, _range_to + 1)
+def in_range(num, range_from, range_to):
+    """
+    检测数字是否在范围[range_from, range_to]内
+    :param num: 待检测数值
+    :param range_from: 起始范围
+    :param range_to: 结束范围
+    :return: 若num在范围内返回True, 否则返回False
+    """
+    return num in xrange(range_from, range_to + 1)

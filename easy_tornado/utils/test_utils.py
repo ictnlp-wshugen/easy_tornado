@@ -6,53 +6,71 @@ from __future__ import print_function
 
 import json
 
-from .log_utils import it_print
+from .logging import it_print
+from .str_utils import parse_json
 from .time_utils import Timer
 from .web_utils import request
 from ..functional import deprecated
 
 
-# 缩进打印
 def print_indent(message):
+    """
+    缩进打印
+    :param message: 待打印消息
+    """
     it_print(message, indent=2)
 
 
-# 以某个消息为前缀打印
-def print_prefix(subject, msg=''):
-    if len(msg) != 0:
+def print_prefix(subject, msg=None):
+    """
+    以某个消息为前缀打印
+    :param subject: 打印内容
+    :param msg: 消息前缀
+    """
+    if msg is not None:
         subject = msg + ' ' + subject
     it_print(subject)
 
 
-# 打印字典
-def print_dict(data, msg=''):
-    if len(msg) != 0:
+def print_dict(data, msg=None):
+    """
+    打印字典
+    :param data: 数据
+    :param msg: 消息提要
+    """
+    if msg is not None:
         it_print(msg)
     for key in data:
         value = data[key]
-        # 参数打印格式
-        item = '{} => {}'
-        print_indent(item.format(key, value))
+        print_indent('{} => {}'.format(key, value))
 
 
-# 以json形式打印
 def json_print(data):
+    """
+    以json形式打印
+    :param data: 待打印数据
+    """
     it_print(json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False))
 
 
-# 将字典以json格式打印
 @deprecated(new_fn=json_print)
 def print_dict_json(data_dict):
     json_print(data_dict)
 
 
-# 打印json
 def print_json(json_string):
-    json_print(json.loads(json_string))
+    """
+    打印json字符串
+    :param json_string: json字符串
+    :return:
+    """
+    json_print(parse_json(json_string))
 
 
-# Http API测试工具
 class HttpTest(object):
+    """
+    Http API测试工具
+    """
     debug = True
 
     def __init__(self, url=None):

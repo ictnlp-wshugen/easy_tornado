@@ -27,8 +27,18 @@ if six.PY3:
 
 
 def utf8decode(text):
+    """
+    将text解码为unicode
+    :param text: 待解码字符
+    :return: 解码后的内容
+    """
     return text.decode('utf-8') if six.PY2 else text
 
 
 def utf8encode(text):
+    """
+    将text编码为UTF8
+    :param text: 待编码内容
+    :return: UTF8编码
+    """
     return text.encode('utf-8') if six.PY2 else text

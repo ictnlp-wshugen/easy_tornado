@@ -6,43 +6,65 @@ from __future__ import division
 
 import time
 
-from .log_utils import it_print
+from .logging import it_print
 
 
-# 获取当前时间戳
 def current_timestamp():
+    """
+    获取当前时间戳
+    :return: 时间戳
+    """
     return time.time()
 
 
-# 获取当前日期
-def current_datetime(_timestamp=None):
-    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(_timestamp))
+def current_datetime(timestamp=None):
+    """
+    获取当前日期
+    :param timestamp: 时间戳
+    :return: 日期时间格式字符串 形如 2018-11-19 10:20:35
+    """
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timestamp))
 
 
-# 获取当前时间戳对应的日期时间
-def current_datetime_str(_timestamp=None):
-    return time.strftime("%Y%m%d%H%M%S", time.localtime(_timestamp))
+def current_datetime_str(timestamp=None):
+    """
+    获取当前时间戳对应的日期时间字符串
+    :param timestamp: 时间戳
+    :return: 日期时间字符串 形如 20181119102035
+    """
+    return time.strftime("%Y%m%d%H%M%S", time.localtime(timestamp))
 
 
-# 获取当前时间戳对应的日期时间
-def current_datetime_str_s(_timestamp=None):
-    return time.strftime("%Y%m%dT%H%M%S", time.localtime(_timestamp))
+def current_datetime_str_s(timestamp=None):
+    """
+    获取当前时间戳对应的以T作为分割的日期、时间字符串
+    :param timestamp: 时间戳
+    :return: 日期时间字符串 形如 20181119T102035
+    """
+    return time.strftime("%Y%m%dT%H%M%S", time.localtime(timestamp))
 
 
-# 计时器类
 class Timer(object):
+    """
+    计时器类
+    """
+
     # 无效时间戳标志
     _invalid_ts = -1
 
     def __init__(self, debug=False):
-        self.debug = debug
+        self._debug = debug
         self._start_ts = self._invalid_ts
         self._finish_ts = self._invalid_ts
         self.reset()
 
     def reset(self):
-        self.start()
-        if self.debug:
+        """
+        重新计时
+        """
+        self._start_ts = time.time()
+        self._finish_ts = self._invalid_ts
+        if self._debug:
             self.display_start('start at: ')
 
     @property
@@ -54,8 +76,7 @@ class Timer(object):
         return self._finish_ts
 
     def start(self):
-        self._start_ts = time.time()
-        self._finish_ts = self._invalid_ts
+        self.reset()
 
     def finish(self):
         self._finish_ts = time.time()
@@ -85,10 +106,10 @@ class Timer(object):
             self.finish()
 
     @staticmethod
-    def _display_datetime(_ts, _msg):
-        _tmp_msg = current_datetime(_ts)
-        if _msg:
-            if not _msg.endswith(' '):
-                _msg += ' '
-            _tmp_msg = _msg + _tmp_msg
+    def _display_datetime(ts, msg=None):
+        _tmp_msg = current_datetime(ts)
+        if msg is not None:
+            if not msg.endswith(' '):
+                msg += ' '
+            _tmp_msg = msg + _tmp_msg
         it_print(_tmp_msg)
