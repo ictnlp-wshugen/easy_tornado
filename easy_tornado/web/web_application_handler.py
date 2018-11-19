@@ -5,11 +5,12 @@
 import json
 
 import six
-from easy_tornado.utils.log_utils import it_print
-from easy_tornado.utils.time_utils import current_datetime
 from six.moves import reload_module
 from tornado.httpclient import AsyncHTTPClient
 from tornado.web import RequestHandler, asynchronous
+
+from ..utils.logging import it_print
+from ..utils.time_extension import current_datetime
 
 if six.PY2:
     import sys
