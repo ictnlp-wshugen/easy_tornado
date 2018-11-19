@@ -42,8 +42,8 @@ def filter_module_methods(module_object, filter_fn=None):
         return x.strip() != '' and x[0].islower() and not (x.startswith('_') or x.startswith('__'))
 
     def _filter_fn_method(x, _):
-        exec_('\n'.join(['import sys', 'from typing import Callable']))
-        return eval('isinstance(sys.modules[_.__name__].{}, Callable)'.format(x))
+        exec_('import sys')
+        return eval('callable(sys.modules[_.__name__].{})'.format(x))
 
     if filter_fn is None:
         filter_fn = _filter_fn_default

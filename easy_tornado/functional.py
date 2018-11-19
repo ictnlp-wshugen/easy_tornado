@@ -3,7 +3,6 @@
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/9 14:36
 from threading import Thread
-from typing import Callable
 
 from .utils.time_extension import Timer
 
@@ -16,10 +15,10 @@ def deprecated(new_fn=None, version=1.0):
     :return 包装函数
     """
     if new_fn is not None:
-        assert isinstance(new_fn, Callable)
+        assert callable(new_fn)
 
     def function_wrapper(fn):
-        assert isinstance(fn, Callable)
+        assert callable(fn)
 
         def wrapper(*args, **kwargs):
             params = {
@@ -64,7 +63,7 @@ def async_call(daemon=False, name=None):
         函数修饰器
         :param fn: 被调用函数
         """
-        assert isinstance(fn, Callable)
+        assert callable(fn)
 
         def wrapper(*args, **kwargs):
             t = Thread(target=fn, args=args, kwargs=kwargs)
@@ -78,19 +77,37 @@ def async_call(daemon=False, name=None):
     return function_wrapper
 
 
-def timed(fn):
+def timed(description=None):
     """
-    标记为统计运行时间的函数
-    :param fn: 被测函数
+    计时标记
+    :param description: 计时描述
+    :return: 包装函数
     """
-    assert isinstance(fn, Callable)
 
-    def wrapper(*args, **kwargs):
-        params = {'fn_name': fn.__name__}
-        timer = Timer()
-        timer.display_start('{fn_name} start at'.format(**params))
-        result = fn(*args, **kwargs)
-        timer.display_finish('{fn_name} finished at'.format(**params))
-        return result
+    def function_wrapper(fn):
+        """
+            标记为统计运行时间的函数
+            :param fn: 被测函数
+            """
+        assert callable(fn)
 
-    return wrapper
+        def wrapper(*args, **kwargs):
+            _description = fn.__name__
+            if description is not None and not callable(description):
+                _description = description
+
+            params = {
+                'description': _description
+            }
+            timer = Timer()
+            timer.display_start('{description} start at'.format(**params))
+            result = fn(*args, **kwargs)
+            timer.display_finish('{description} finished at'.format(**params))
+            return result
+
+        return wrapper
+
+    if callable(description):
+        return function_wrapper(fn=description)
+
+    return function_wrapper
