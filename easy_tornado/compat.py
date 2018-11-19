@@ -57,9 +57,42 @@ def utf8encode(text):
     return text
 
 
-def _happy_move_functions(*functions):
+TYPE_FUNCTION = "<type 'function'>"
+TYPE_CLASS = "<type 'type'>"
+
+
+def happy_move_functions(new_module, *functions):
     """
     用于无警告移动函数
+    :param new_module: 新模块
     :param functions: 移动的函数名
     """
-    len(functions)
+    import warnings
+
+    func_count = 0
+    class_count = 0
+    moved_classes = []
+    moved_functions = []
+    for fn in functions:
+        type_name = str(type(fn))
+        if type_name == TYPE_CLASS:
+            class_count += 1
+            moved_classes.append(fn.__name__)
+        elif type_name == TYPE_FUNCTION:
+            func_count += 1
+            moved_functions.append(fn.__name__)
+
+    kwargs = {
+        'module_name': new_module.__name__,
+        'class_count': class_count,
+        'func_count': func_count,
+        'moved_classes': ','.join(moved_classes),
+        'moved_functions': ','.join(moved_functions),
+
+    }
+    message = '''function moved warnings
+{class_count} class and {func_count} function has been moved to "{module_name}".
+moved classes: "{moved_classes}"
+moved functions: "{moved_functions}"
+please update to the newest version as soon as possible.'''.format(**kwargs)
+    warnings.warn(message)
