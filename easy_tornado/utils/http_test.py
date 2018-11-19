@@ -8,8 +8,8 @@ import json
 
 from .logging import it_print
 from .str_extension import parse_json
-from .time_utils import Timer
-from .web_utils import request
+from .time_extension import Timer
+from .web_extension import request
 from ..functional import deprecated
 
 
