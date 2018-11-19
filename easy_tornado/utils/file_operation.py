@@ -3,11 +3,13 @@
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/19 11:07
 import hashlib
+import io
 import json
 import os
 import shutil
 import subprocess
 import tempfile
+from collections import Iterable
 
 from decorator import contextmanager
 
@@ -280,3 +282,28 @@ def mkdtemp():
     create_if_not_exists(path)
     yield path
     shutil.rmtree(path)
+
+
+@contextmanager
+def open_files(*paths, **kwargs):
+    """
+    批量打开文件
+    :param paths: 文件路径
+    :param kwargs: 关键字参数(包含打开文件句柄的函数open_fn及相应的函数调用关键字参数)
+    :return: 文件句柄
+    """
+    handles = []
+    if not isinstance(paths, Iterable):
+        paths = [paths]
+
+    open_fn = kwargs.pop('open_fn', io.open)
+    if not callable(open_fn):
+        raise TypeError('open_fn should be callable type, but got {}'.format(type(open_fn)))
+
+    for path in paths:
+        handles.append(open_fn(path, **kwargs))
+
+    yield handles
+
+    for handle in handles:
+        handle.close()

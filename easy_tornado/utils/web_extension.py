@@ -4,7 +4,7 @@
 # date: 2018/11/19 11:32
 import json
 import urllib
-from typing import Iterable
+from collections import Iterable
 
 import six
 from six.moves import xrange

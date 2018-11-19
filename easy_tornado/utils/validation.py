@@ -2,8 +2,9 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/19 11:30
+from collections import Iterable
+
 from six.moves import xrange
-from typing import Iterable
 
 
 def contain_keys(data, *keys):
