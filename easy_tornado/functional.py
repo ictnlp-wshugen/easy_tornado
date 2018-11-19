@@ -3,13 +3,12 @@
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/9 14:36
 from threading import Thread
-
 from typing import Callable
 
-from .utils.time_utils import Timer
+from .utils.time_extension import Timer
 
 
-def deprecated(new_fn=None, version=None):
+def deprecated(new_fn=None, version=5):
     """
     标记为弃用 decorator
     :param new_fn: 新的替代函数

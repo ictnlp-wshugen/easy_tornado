@@ -2,16 +2,7 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018年8月23日 14:26:49
-from .logging import it_print
+from .error_handler import error_exit
+from ..compat import _happy_move_functions
 
-
-def error_exit(errno, error=None):
-    """
-    打印消息并退出
-    :param errno: 错误码
-    :param error: 错误内容
-    :return: 
-    """
-    if error is not None:
-        it_print(error)
-    exit(errno)
+_happy_move_functions(error_exit)

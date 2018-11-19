@@ -4,8 +4,6 @@
 # date: 2018/10/30 14:29
 from .logging import it_print
 from .logging import it_prints
+from ..compat import _happy_move_functions
 
-
-def _happy_python():
-    it_print()
-    it_prints()
+_happy_move_functions(it_print, it_prints)

@@ -55,3 +55,11 @@ def utf8encode(text):
     if python2:
         return text.encode('utf-8')
     return text
+
+
+def _happy_move_functions(*functions):
+    """
+    用于无警告移动函数
+    :param functions: 移动的函数名
+    """
+    len(functions)

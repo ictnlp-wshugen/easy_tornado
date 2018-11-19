@@ -2,28 +2,8 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018年8月23日 14:26:49
-from six.moves import xrange
+from .validation import contain_keys
+from .validation import in_range
+from ..compat import _happy_move_functions
 
-
-def contain_keys(data, *keys):
-    """
-    检测字典data中是否包含指定的所有键
-    :param data: 数据
-    :param keys: 键集
-    :return: 若data包含keys中所有键则返回True, 否则返回False
-    """
-    for key in keys:
-        if key not in data:
-            return False
-    return True
-
-
-def in_range(num, range_from, range_to):
-    """
-    检测数字是否在范围[range_from, range_to]内
-    :param num: 待检测数值
-    :param range_from: 起始范围
-    :param range_to: 结束范围
-    :return: 若num在范围内返回True, 否则返回False
-    """
-    return num in xrange(range_from, range_to + 1)
+_happy_move_functions(contain_keys, in_range)

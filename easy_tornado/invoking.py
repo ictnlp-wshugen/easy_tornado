@@ -4,12 +4,11 @@
 # date: 2018/11/14 16:30
 import io
 import subprocess
-import sys
 import warnings
 
 import six
 
-from .utils.file_utils import write_file_contents
+from .utils.file_operation import write_file_contents
 
 NOHUP = 'nohup'
 BG_MARK = '&'

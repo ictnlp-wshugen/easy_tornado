@@ -2,15 +2,7 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018/8/27 15:26
-from collections import Iterable
+from .coll_extension import unique_list
+from ..compat import _happy_move_functions
 
-
-def unique_list(items):
-    """
-    获取无重复的列表
-    :param items: 可迭代对象
-    :return: 无重复的list对象
-    """
-    if not isinstance(items, Iterable):
-        return items
-    return list(set(items))
+_happy_move_functions(unique_list)
