@@ -8,6 +8,7 @@ import os
 import shutil
 import subprocess
 import tempfile
+
 from decorator import contextmanager
 
 from ..functional import deprecated
@@ -190,12 +191,12 @@ def file_append(path_append_to, path_append_from):
             subprocess.check_call(cmd_create_str, shell=True)
         except subprocess.CalledProcessError:
             return False
-
-    cmd_append_str = 'cat {path_append_from} >> {path_append_to}'.format(**kwargs)
-    try:
-        subprocess.check_call(cmd_append_str, shell=True)
-    except subprocess.CalledProcessError:
-        return False
+    else:
+        cmd_append_str = 'cat {path_append_from} >> {path_append_to}'.format(**kwargs)
+        try:
+            subprocess.check_call(cmd_append_str, shell=True)
+        except subprocess.CalledProcessError:
+            return False
     return True
 
 
