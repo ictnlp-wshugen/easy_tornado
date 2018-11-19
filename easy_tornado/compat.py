@@ -6,24 +6,33 @@ import sys
 
 import six
 
-if six.PY2:
+python2 = six.PY2
+python3 = six.PY3
+
+if python2:
     C_StandardError = StandardError
     C_MAXINT = sys.maxint
 
-if six.PY3:
-    class StandardError(Exception):
-
-        def __init__(self, *args, **kwargs):
-            self._message = args[0]
-            super(StandardError, self).__init__(*args, **kwargs)
-
-        @property
-        def message(self):
-            return self._message
-
-
-    C_StandardError = StandardError
+if python3:
+    C_StandardError = BaseException
     C_MAXINT = sys.maxsize
+
+
+def cse_message(e):
+    """
+    获取异常消息
+    :param e: 异常实例
+    :return: 异常消息
+    """
+    assert isinstance(e, C_StandardError)
+
+    if python2:
+        return e.message
+
+    if python3:
+        if len(e.args) >= 1:
+            return e.args[0]
+        return ''
 
 
 def utf8decode(text):
@@ -32,7 +41,9 @@ def utf8decode(text):
     :param text: 待解码字符
     :return: 解码后的内容
     """
-    return text.decode('utf-8') if six.PY2 else text
+    if python2:
+        return text.decode('utf-8')
+    return text
 
 
 def utf8encode(text):
@@ -41,4 +52,6 @@ def utf8encode(text):
     :param text: 待编码内容
     :return: UTF8编码
     """
-    return text.encode('utf-8') if six.PY2 else text
+    if python2:
+        return text.encode('utf-8')
+    return text
