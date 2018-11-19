@@ -8,7 +8,7 @@ from typing import Callable
 from .utils.time_extension import Timer
 
 
-def deprecated(new_fn=None, version=5):
+def deprecated(new_fn=None, version=1.0):
     """
     标记为弃用 decorator
     :param new_fn: 新的替代函数
