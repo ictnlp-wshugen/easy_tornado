@@ -3,6 +3,7 @@
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/19 11:30
 from six.moves import xrange
+from typing import Iterable
 
 
 def contain_keys(data, *keys):
@@ -12,6 +13,12 @@ def contain_keys(data, *keys):
     :param keys: 键集
     :return: 若data包含keys中所有键则返回True, 否则返回False
     """
+    if len(keys) == 1:
+        keys = keys[0]
+
+    if not isinstance(keys, Iterable):
+        return False
+
     for key in keys:
         if key not in data:
             return False
