@@ -10,7 +10,7 @@ python2 = six.PY2
 python3 = six.PY3
 
 if python2:
-    C_StandardError = StandardError
+    C_StandardError = Exception
     C_MAXINT = sys.maxint
 
 if python3:
