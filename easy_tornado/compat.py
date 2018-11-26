@@ -27,7 +27,10 @@ def cse_message(e):
     assert isinstance(e, C_StandardError)
 
     if python2:
-        return e.message
+        result = e.message
+        if result == '':
+            result = str(e)
+        return result
 
     if python3:
         if len(e.args) >= 1:
