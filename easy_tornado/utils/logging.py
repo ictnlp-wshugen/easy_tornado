@@ -33,7 +33,7 @@ def it_print(message=None, indent=0, device=1, newline=True):
     in time print: print one line to console immediately
 
     :param message: the message to be printed
-    :type message: str
+    :type message: object
 
     :param indent: number of blank to be indented, default 0
     :type indent: int
