@@ -24,11 +24,16 @@ def shell_invoke(command, **kwargs):
         log_prefix: 日志路径前缀
         debug: 是否为调试模式
         daemon: 是否在主线程退出之后仍然运行
+        on_error: 用于处理出现错误时的函数
+            接收参数 e subprocess.CalledProcessError
     :return: 返回码
     """
     log_prefix = kwargs.pop('log_prefix', None)
     debug = kwargs.pop('debug', True)
     daemon = kwargs.pop('daemon', False)
+    on_error = kwargs.pop('on_error', None)
+    if on_error is not None and not callable(on_error):
+        raise TypeError('on_error must be of callable, but got {}'.format(type(on_error)))
 
     command = command.strip()
     if command == '' or command.startswith(NOHUP) or command.endswith(BG_MARK):
@@ -44,7 +49,13 @@ def shell_invoke(command, **kwargs):
     if daemon:
         command = '{} {} {}'.format(NOHUP, command, BG_MARK)
 
-    return subprocess.check_call(command, shell=True, stdout=stdout, stderr=stderr)
+    try:
+        return subprocess.check_call(command, shell=True, stdout=stdout, stderr=stderr)
+    except subprocess.CalledProcessError as e:
+        if on_error:
+            on_error(e)
+        else:
+            raise
 
 
 def executable_exists(executable):
@@ -71,6 +82,7 @@ def _python_invoke(command, **kwargs):
         log_prefix: 日志路径前缀
         debug: 是否为调试模式
         daemon: 是否在主线程退出之后仍然运行
+        on_error: 错误处理函数
         interpreter: Python解释器
     :return: 返回码
     """
