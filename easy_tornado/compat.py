@@ -60,8 +60,9 @@ def utf8encode(text):
     return text
 
 
-TYPE_FUNCTION = "<type 'function'>"
-TYPE_CLASS = "<type 'type'>"
+TYPE_NAME = 'type' if python2 else 'class'
+TYPE_FUNCTION = "<{} 'function'>".format(TYPE_NAME)
+TYPE_CLASS = "<{} 'type'>".format(TYPE_NAME)
 
 
 def happy_move_functions(new_module, *functions):
