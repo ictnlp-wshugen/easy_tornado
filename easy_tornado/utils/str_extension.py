@@ -28,6 +28,9 @@ def parse_json(json_str):
     return json.loads(json_str)
 
 
+from_json = parse_json
+
+
 def as_json(subject):
     """
     将subject转换为json字符串
