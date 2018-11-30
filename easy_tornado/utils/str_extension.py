@@ -5,6 +5,8 @@
 import hashlib
 import json
 
+from ..compat import utf8encode
+
 
 def md5sum(text):
     """
@@ -24,3 +26,16 @@ def parse_json(json_str):
     :return: python对象(dict)
     """
     return json.loads(json_str)
+
+
+def as_json(subject):
+    """
+    将subject转换为json字符串
+    :param subject: 待转换对象
+    :type subject: object
+    :return: 字符串
+    """
+    return utf8encode(json.dumps(subject, ensure_ascii=False))
+
+
+to_json = as_json
