@@ -2,6 +2,7 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/19 09:30
+import functools
 import sys
 
 
@@ -28,6 +29,12 @@ def _add_indent(lines, space_cnt):
     return s
 
 
+"""
+Whether enable message out or not
+"""
+_enable = True
+
+
 def it_print(message=None, indent=0, device=1, newline=True):
     """
     in time print: print one line to console immediately
@@ -44,6 +51,10 @@ def it_print(message=None, indent=0, device=1, newline=True):
     :param newline: whether to append a new line, default True
     :type newline: bool
     """
+    global _enable
+    if not _enable:
+        return
+
     if message is None:
         message = ''
     message = ' ' * indent + str(message)
@@ -66,3 +77,63 @@ def it_prints(message=None, indent=0, indent_inner=2, device=1, newline=True):
     if message is not None:
         message = _add_indent(message, indent_inner)
     it_print(message, indent=indent, device=device, newline=newline)
+
+
+def _set_enabled(enable):
+    global _enable
+    _enable = enable
+
+
+def is_print_enable():
+    """
+    get the current printable status
+    """
+    return _enable
+
+
+def set_print_enable():
+    _set_enabled(True)
+
+
+def set_print_disable():
+    _set_enabled(False)
+
+
+class disable_print(object):
+    def __init__(self):
+        self.prev = is_print_enable()
+
+    def __enter__(self):
+        set_print_disable()
+
+    def __exit__(self, *args):
+        _set_enabled(self.prev)
+        return False
+
+    def __call__(self, func):
+        @functools.wraps(func)
+        def decorate_disable_print(*args, **kwargs):
+            with self:
+                return func(*args, **kwargs)
+
+        return decorate_disable_print
+
+
+class enable_print(object):
+    def __init__(self):
+        self.prev = is_print_enable()
+
+    def __enter__(self):
+        set_print_enable()
+
+    def __exit__(self, *args):
+        _set_enabled(self.prev)
+        return False
+
+    def __call__(self, func):
+        @functools.wraps(func)
+        def decorate_disable_print(*args, **kwargs):
+            with self:
+                return func(*args, **kwargs)
+
+        return decorate_disable_print

@@ -216,17 +216,21 @@ def write_pid(path):
         fp.write(str(os.getpid()))
 
 
-def load_file_contents(path):
+def load_file_contents(path, pieces=True):
     """
     读取文件内容
     :param path: 文件路径
+    :param pieces: 是否按行返回
     :return: 若文件不存在返回None, 若可正确读取则返回按行分割的内容列表
     """
     if not file_exists(path):
         return None
 
     with open(path, 'r') as fp:
-        return fp.readlines()
+        lines = fp.readlines()
+        if pieces:
+            return lines
+        return ''.join([x.strip() for x in lines])
 
 
 def write_line(wfp, line):
