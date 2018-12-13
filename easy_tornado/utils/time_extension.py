@@ -96,7 +96,7 @@ class Timer(object):
         cost = self.cost()
         prefix = ''
         if msg:
-            prefix = 'job [{}] '.format(msg)
+            prefix = 'job [{}]'.format(msg)
         it_print('{} cost {} seconds'.format(prefix, cost))
 
     def _set_finish(self):

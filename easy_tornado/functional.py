@@ -97,9 +97,9 @@ def timed(description=None):
                 _description = description
 
             timer = Timer()
-            timer.display_start(_description)
+            timer.display_start('{} start at'.format(_description))
             result = fn(*args, **kwargs)
-            timer.display_finish(_description)
+            timer.display_finish('{} complete at'.format(_description))
             timer.display_cost(_description)
             return result
 
