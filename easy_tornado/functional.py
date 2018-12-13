@@ -96,13 +96,11 @@ def timed(description=None):
             if description is not None and not callable(description):
                 _description = description
 
-            params = {
-                'description': _description
-            }
             timer = Timer()
-            timer.display_start('{description} start at'.format(**params))
+            timer.display_start(_description)
             result = fn(*args, **kwargs)
-            timer.display_finish('{description} finished at'.format(**params))
+            timer.display_finish(_description)
+            timer.display_cost(_description)
             return result
 
         return wrapper

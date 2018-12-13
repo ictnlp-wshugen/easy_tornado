@@ -85,10 +85,10 @@ class Timer(object):
         self._set_finish()
         return self._finish_ts - self._start_ts
 
-    def display_start(self, msg):
+    def display_start(self, msg=None):
         Timer._display_datetime(self._start_ts, msg)
 
-    def display_finish(self, msg):
+    def display_finish(self, msg=None):
         self._set_finish()
         Timer._display_datetime(self._finish_ts, msg)
 
@@ -96,10 +96,8 @@ class Timer(object):
         cost = self.cost()
         prefix = ''
         if msg:
-            prefix = 'Job [{}] '.format(msg)
-        self.display_start(prefix + 'start at: ')
-        self.display_finish(prefix + 'finished at: ')
-        it_print('cost {} seconds'.format(cost))
+            prefix = 'job [{}] '.format(msg)
+        it_print('{} cost {} seconds'.format(prefix, cost))
 
     def _set_finish(self):
         if self._finish_ts == self._invalid_ts:
