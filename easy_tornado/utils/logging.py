@@ -61,8 +61,11 @@ def it_print(message=None, indent=0, device=1, newline=True):
 
     if device == 2:
         device = sys.stderr
-    else:
+    elif device == 1:
         device = sys.stdout
+    else:
+        # a file-like object
+        pass
 
     device.write(message)
     if newline:
