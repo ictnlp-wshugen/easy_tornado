@@ -216,11 +216,12 @@ def write_pid(path):
         fp.write(str(os.getpid()))
 
 
-def load_file_contents(path, pieces=True):
+def load_file_contents(path, pieces=True, strip=True):
     """
     读取文件内容
     :param path: 文件路径
     :param pieces: 是否按行返回
+    :param strip: 是否对每行进行strip操作
     :return: 若文件不存在返回None, 若可正确读取则返回按行分割的内容列表
     """
     if not file_exists(path):
@@ -230,7 +231,12 @@ def load_file_contents(path, pieces=True):
         lines = fp.readlines()
         if pieces:
             return lines
-        return ''.join([x.strip() for x in lines])
+
+        if strip:
+            contents = ''.join([x.strip() for x in lines])
+        else:
+            contents = ''.join([x for x in lines])
+        return contents
 
 
 def write_line(wfp, line):
