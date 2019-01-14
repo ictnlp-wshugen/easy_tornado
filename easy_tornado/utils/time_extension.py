@@ -77,9 +77,11 @@ class Timer(object):
 
     def start(self):
         self.reset()
+        return self.start_ts
 
     def finish(self):
         self._finish_ts = time.time()
+        return self.finish_ts
 
     def cost(self):
         self._set_finish()
