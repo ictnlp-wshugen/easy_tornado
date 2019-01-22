@@ -50,7 +50,7 @@ def file_exists(path):
     :param path: 文件路径
     :return: 文件存在返回True, 否则返回False
     """
-    return os.path.exists(path)
+    return os.path.islink(path) or os.path.exists(path)
 
 
 def get_file_size(path):
@@ -81,10 +81,10 @@ def remove_file(path, ignore_errors=True):
     :param ignore_errors: 是否忽略错误
     :raise 若路径不存在, 则无操作; 若路径既非文件且又非目录则产生ValueError
     """
-    if not os.path.exists(path):
+    if not file_exists(path):
         return
 
-    if os.path.isfile(path):
+    if os.path.isfile(path) or os.path.islink(path):
         os.remove(path)
     elif os.path.isdir(path):
         shutil.rmtree(path, ignore_errors=ignore_errors)
