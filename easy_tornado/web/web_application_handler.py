@@ -9,6 +9,7 @@ from tornado.web import RequestHandler, asynchronous
 
 from ..utils.logging import it_print
 from ..utils.time_extension import current_datetime
+from ..compat import utf8encode
 
 
 class WebApplicationHandler(RequestHandler):
@@ -76,7 +77,7 @@ class WebApplicationHandler(RequestHandler):
             callback = self.response
         if data is None:
             data = {}
-        data = json.dumps(data, ensure_ascii=False)
+        data = utf8encode(json.dumps(data, ensure_ascii=False))
         client = AsyncHTTPClient()
         client.fetch(url, body=data, callback=callback, method=method, request_timeout=timeout)
 
