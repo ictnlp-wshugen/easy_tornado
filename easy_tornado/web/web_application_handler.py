@@ -7,6 +7,7 @@ import json
 from tornado.httpclient import AsyncHTTPClient
 from tornado.web import RequestHandler, asynchronous
 
+from ..utils.http_test import json_print
 from ..utils.logging import it_print
 from ..utils.str_extension import to_json
 from ..utils.time_extension import current_datetime
@@ -97,11 +98,10 @@ class WebApplicationHandler(RequestHandler):
     def __json_response(self, data):
         if self.debug:
             data['response_time'] = current_datetime()
+            json_print(data)
         self.__output_response(to_json(data))
 
     def __output_response(self, data):
-        if self.debug:
-            it_print(data)
         self.write(data)
         self.finish()
 
@@ -120,4 +120,4 @@ class WebApplicationHandler(RequestHandler):
 
     @staticmethod
     def pretty_it_print(data):
-        it_print(to_json(data))
+        json_print(data)
