@@ -4,7 +4,6 @@
 # date: 2018/11/19 11:07
 import hashlib
 import io
-import json
 import os
 import shutil
 import subprocess
@@ -13,6 +12,7 @@ from collections import Iterable
 
 from decorator import contextmanager
 
+from .str_extension import to_json
 from ..functional import deprecated
 
 
@@ -266,7 +266,7 @@ def write_json_contents(path, data):
     :param path: 文件路径
     :param data: 待写入数据
     """
-    json_str = json.dumps(data, ensure_ascii=False)
+    json_str = to_json(data)
     write_file_contents(path, json_str)
 
 

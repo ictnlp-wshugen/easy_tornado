@@ -8,8 +8,8 @@ from tornado.httpclient import AsyncHTTPClient
 from tornado.web import RequestHandler, asynchronous
 
 from ..utils.logging import it_print
+from ..utils.str_extension import to_json
 from ..utils.time_extension import current_datetime
-from ..compat import utf8encode
 
 
 class WebApplicationHandler(RequestHandler):
@@ -77,9 +77,9 @@ class WebApplicationHandler(RequestHandler):
             callback = self.response
         if data is None:
             data = {}
-        data = utf8encode(json.dumps(data, ensure_ascii=False))
+        json_data = to_json(data)
         client = AsyncHTTPClient()
-        client.fetch(url, body=data, callback=callback, method=method, request_timeout=timeout)
+        client.fetch(url, body=json_data, callback=callback, method=method, request_timeout=timeout)
 
     def success_response(self, data=None):
         self.error_response(self.none, self.error_mapper[self.none], data)
@@ -97,7 +97,7 @@ class WebApplicationHandler(RequestHandler):
     def __json_response(self, data):
         if self.debug:
             data['response_time'] = current_datetime()
-        self.__output_response(json.dumps(data, ensure_ascii=False))
+        self.__output_response(to_json(data))
 
     def __output_response(self, data):
         if self.debug:
@@ -120,4 +120,4 @@ class WebApplicationHandler(RequestHandler):
 
     @staticmethod
     def pretty_it_print(data):
-        it_print(json.dumps(data, ensure_ascii=False))
+        it_print(to_json(data))

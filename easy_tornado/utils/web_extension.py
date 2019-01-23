@@ -2,14 +2,13 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/19 11:32
-import json
 import urllib
 from collections import Iterable
 
 import six
 from six.moves import xrange
 
-from ..compat import utf8encode
+from easy_tornado.utils.str_extension import to_json
 
 
 class TimeoutError(Exception):
@@ -56,7 +55,7 @@ def request(request_url, data=None, as_json=True, timeout=None):
         req = Request(request_url)
         opener = build_opener(HTTPCookieProcessor())
         if data is not None:
-            data = utf8encode(json.dumps(data, ensure_ascii=False)) if as_json else urllib.urlencode(data)
+            data = to_json(data) if as_json else urllib.urlencode(data)
         try:
             response = opener.open(req, data, **kwargs)
             result = response.read()
@@ -77,7 +76,7 @@ def request(request_url, data=None, as_json=True, timeout=None):
         pool = PoolManager()
         if data is not None:
             if as_json:
-                kwargs['body'] = json.dumps(data, ensure_ascii=False).encode('utf-8')
+                kwargs['body'] = to_json(data)
             else:
                 kwargs['fields'] = data
         try:

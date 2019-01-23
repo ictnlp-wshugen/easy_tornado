@@ -4,10 +4,8 @@
 # date: 2018/11/19 11:25
 from __future__ import print_function
 
-import json
-
 from .logging import it_print
-from .str_extension import parse_json
+from .str_extension import parse_json, to_json
 from .time_extension import Timer
 from .web_extension import request
 from ..functional import deprecated
@@ -50,7 +48,7 @@ def json_print(data):
     以json形式打印
     :param data: 待打印数据
     """
-    it_print(json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False))
+    it_print(to_json(data, indent=2, sort_keys=True, ensure_ascii=False))
 
 
 @deprecated(new_fn=json_print)

@@ -31,14 +31,17 @@ def parse_json(json_str):
 from_json = parse_json
 
 
-def as_json(subject):
+def as_json(subject, **kwargs):
     """
     将subject转换为json字符串
     :param subject: 待转换对象
     :type subject: object
+    :param kwargs: 其余参数
     :return: 字符串
     """
-    return utf8encode(json.dumps(subject, ensure_ascii=False))
+    if not hasattr(kwargs, 'ensure_ascii'):
+        kwargs['ensure_ascii'] = False
+    return utf8encode(json.dumps(subject, **kwargs))
 
 
 to_json = as_json
