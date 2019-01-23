@@ -13,6 +13,11 @@ if python2:
     C_StandardError = Exception
     C_MAXINT = sys.maxint
 
+    from six.moves import reload_module
+
+    reload_module(sys)
+    sys.setdefaultencoding('utf-8')
+
 if python3:
     C_StandardError = BaseException
     C_MAXINT = sys.maxsize

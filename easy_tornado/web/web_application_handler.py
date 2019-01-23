@@ -4,19 +4,11 @@
 # date: 2018年8月23日 14:26:49
 import json
 
-import six
-from six.moves import reload_module
 from tornado.httpclient import AsyncHTTPClient
 from tornado.web import RequestHandler, asynchronous
 
 from ..utils.logging import it_print
 from ..utils.time_extension import current_datetime
-
-if six.PY2:
-    import sys
-
-    reload_module(sys)
-    sys.setdefaultencoding('utf-8')
 
 
 class WebApplicationHandler(RequestHandler):

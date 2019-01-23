@@ -9,6 +9,8 @@ from collections import Iterable
 import six
 from six.moves import xrange
 
+from ..compat import utf8encode
+
 
 class TimeoutError(Exception):
     """
@@ -54,7 +56,7 @@ def request(request_url, data=None, as_json=True, timeout=None):
         req = Request(request_url)
         opener = build_opener(HTTPCookieProcessor())
         if data is not None:
-            data = json.dumps(data, ensure_ascii=False).encode('utf-8') if as_json else urllib.urlencode(data)
+            data = utf8encode(json.dumps(data, ensure_ascii=False)) if as_json else urllib.urlencode(data)
         try:
             response = opener.open(req, data, **kwargs)
             result = response.read()
