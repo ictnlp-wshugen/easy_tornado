@@ -9,10 +9,12 @@ import shutil
 import subprocess
 import tempfile
 from collections import Iterable
+from functools import partial
 
 from decorator import contextmanager
 
 from .str_extension import to_json
+from ..compat import utf8encode
 from ..functional import deprecated
 
 
@@ -110,20 +112,31 @@ def create_if_not_exist_path(file_path):
     create_if_not_exists(file_path)
 
 
-def concat_path(base_path, sub_path):
+def concat_path(base_path, sub_path=None, utf8=False):
     """
     拼接路径
     :param base_path: 基本路径
     :param sub_path: 子路径
+    :param utf8: 控制是否使用utf8编码(如传输C库)
     :return: 拼接后的路径
     """
-    return os.path.join(base_path, sub_path)
+    assert base_path is not None
+    if sub_path is None:
+        path = base_path
+    else:
+        path = os.path.join(base_path, sub_path)
+    return utf8encode(path) if utf8 else path
 
 
 """
     拼接路径函数别名
 """
 cp = concat_path
+
+"""
+    拼接作为C库的路径参数
+"""
+clp = partial(concat_path, utf8=True)
 
 
 @deprecated(new_fn=concat_path)
