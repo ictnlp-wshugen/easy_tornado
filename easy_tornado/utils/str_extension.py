@@ -39,9 +39,13 @@ def as_json(subject, **kwargs):
     :param kwargs: 其余参数
     :return: 字符串
     """
-    if not hasattr(kwargs, 'ensure_ascii'):
+    if 'ensure_ascii' not in kwargs:
         kwargs['ensure_ascii'] = False
-    return utf8encode(json.dumps(subject, **kwargs))
+    utf8 = 'utf8' in kwargs
+    if utf8:
+        kwargs.pop('utf8')
+    data = json.dumps(subject, **kwargs)
+    return utf8encode(data) if utf8 else data
 
 
 to_json = as_json

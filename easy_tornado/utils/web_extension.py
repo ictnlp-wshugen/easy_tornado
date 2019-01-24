@@ -8,7 +8,7 @@ from collections import Iterable
 import six
 from six.moves import xrange
 
-from easy_tornado.utils.str_extension import to_json
+from ..utils.str_extension import to_json
 
 
 class TimeoutError(Exception):
@@ -55,7 +55,7 @@ def request(request_url, data=None, as_json=True, timeout=None):
         req = Request(request_url)
         opener = build_opener(HTTPCookieProcessor())
         if data is not None:
-            data = to_json(data) if as_json else urllib.urlencode(data)
+            data = to_json(data, utf8=True) if as_json else urllib.urlencode(data)
         try:
             response = opener.open(req, data, **kwargs)
             result = response.read()
@@ -76,7 +76,7 @@ def request(request_url, data=None, as_json=True, timeout=None):
         http = PoolManager()
         if data is not None:
             if as_json:
-                kwargs['body'] = to_json(data).encode('utf-8')
+                kwargs['body'] = to_json(data, utf8=True)
             else:
                 kwargs['fields'] = data
         try:

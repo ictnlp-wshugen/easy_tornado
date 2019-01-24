@@ -49,9 +49,7 @@ def utf8decode(text):
     :param text: 待解码字符
     :return: 解码后的内容
     """
-    if python2:
-        return text.decode('utf-8')
-    return text
+    return text.decode('utf-8')
 
 
 def utf8encode(text):
@@ -60,9 +58,7 @@ def utf8encode(text):
     :param text: 待编码内容
     :return: UTF8编码
     """
-    if python2:
-        return text.encode('utf-8')
-    return text
+    return text.encode('utf-8')
 
 
 TYPE_NAME = 'type' if python2 else 'class'

@@ -7,7 +7,7 @@ import json
 from tornado.httpclient import AsyncHTTPClient
 from tornado.web import RequestHandler, asynchronous
 
-from ..compat import python3
+from ..compat import utf8decode
 from ..utils.http_test import json_print
 from ..utils.logging import it_print
 from ..utils.str_extension import to_json
@@ -61,9 +61,7 @@ class WebApplicationHandler(RequestHandler):
     # 加载为json数据
     def load_request_data(self):
         try:
-            body = self.request.body
-            if python3:
-                body = body.decode('utf-8')
+            body = utf8decode(self.request.body)
             params = json.loads(body) if body != '' else dict()
             # 加入私有属性作为数据，否则params为空，被if not判断为真
             params['_uri'] = self.request.uri
