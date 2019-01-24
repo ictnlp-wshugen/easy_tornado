@@ -7,6 +7,7 @@ import json
 from tornado.httpclient import AsyncHTTPClient
 from tornado.web import RequestHandler, asynchronous
 
+from ..compat import python3
 from ..utils.http_test import json_print
 from ..utils.logging import it_print
 from ..utils.str_extension import to_json
@@ -61,7 +62,9 @@ class WebApplicationHandler(RequestHandler):
     def load_request_data(self):
         try:
             body = self.request.body
-            params = json.loads(self.request.body) if body != '' else dict()
+            if python3:
+                body = body.decode('utf-8')
+            params = json.loads(body) if body != '' else dict()
             # 加入私有属性作为数据，否则params为空，被if not判断为真
             params['_uri'] = self.request.uri
             if self.debug:
@@ -98,7 +101,7 @@ class WebApplicationHandler(RequestHandler):
     def __json_response(self, data):
         if self.debug:
             data['response_time'] = current_datetime()
-            json_print(data)
+            self.pretty_it_print(data)
         self.__output_response(to_json(data))
 
     def __output_response(self, data):

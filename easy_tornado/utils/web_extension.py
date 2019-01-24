@@ -73,14 +73,14 @@ def request(request_url, data=None, as_json=True, timeout=None):
         from urllib3.exceptions import ReadTimeoutError
         from urllib3.exceptions import RequestError
 
-        pool = PoolManager()
+        http = PoolManager()
         if data is not None:
             if as_json:
-                kwargs['body'] = to_json(data)
+                kwargs['body'] = to_json(data).encode('utf-8')
             else:
                 kwargs['fields'] = data
         try:
-            response = pool.request('POST', request_url, **kwargs)
+            response = http.request('POST', request_url, **kwargs)
             result = response.data
         except RequestError as e:
             if isinstance(e, MaxRetryError) and isinstance(e.reason, NewConnectionError):
