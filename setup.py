@@ -3,7 +3,11 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018/8/23 14:29
+import ssl
+
 from setuptools import setup, find_packages
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 setup(name='easy_tornado',
       version='0.5.2',
