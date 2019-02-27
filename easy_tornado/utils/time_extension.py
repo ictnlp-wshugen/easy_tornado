@@ -75,6 +75,10 @@ class Timer(object):
     def finish_ts(self):
         return self._finish_ts
 
+    @property
+    def elapsed(self):
+        return time.time() - self.start_ts
+
     def start(self):
         self.reset()
         return self.start_ts
