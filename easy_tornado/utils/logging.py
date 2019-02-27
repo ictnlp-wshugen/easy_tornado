@@ -5,6 +5,8 @@
 import functools
 import sys
 
+from .str_extension import as_json
+
 
 def _add_indent(lines, space_cnt):
     """
@@ -35,7 +37,7 @@ Whether enable message out or not
 _enable = True
 
 
-def it_print(message=None, indent=0, device=1, newline=True):
+def it_print(message='', indent=None, device=1, newline=True, json_fmt=False):
     """
     in time print: print one line to console immediately
 
@@ -50,14 +52,25 @@ def it_print(message=None, indent=0, device=1, newline=True):
 
     :param newline: whether to append a new line, default True
     :type newline: bool
+
+    :param json_fmt: whether to print as json
+    :type json_fmt: bool
     """
     global _enable
     if not _enable:
         return
 
     if message is None:
-        message = ''
-    message = ' ' * indent + str(message)
+        message = str(None)
+    else:
+        if not json_fmt:
+            if indent is None:
+                indent = 0
+            message = ' ' * indent + str(message)
+        else:
+            if indent is None:
+                indent = 2
+            message = as_json(message, indent=indent)
 
     if device == 2:
         device = sys.stderr
@@ -73,7 +86,7 @@ def it_print(message=None, indent=0, device=1, newline=True):
     device.flush()
 
 
-def it_prints(message=None, indent=0, indent_inner=2, device=1, newline=True):
+def it_prints(message='', indent=None, indent_inner=2, device=1, newline=True):
     """
     in time print multiple lines: first indent with indent blanks, then every line is indented with indent_inner blanks
     """
