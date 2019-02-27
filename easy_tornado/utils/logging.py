@@ -68,8 +68,6 @@ def it_print(message='', indent=None, device=1, newline=True, json_fmt=False):
                 indent = 0
             message = ' ' * indent + str(message)
         else:
-            if indent is None:
-                indent = 2
             message = as_json(message, indent=indent)
 
     if device == 2:
