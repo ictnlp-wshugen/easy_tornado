@@ -6,8 +6,6 @@ from __future__ import division
 
 import time
 
-from .logging import it_print
-
 
 def current_timestamp():
     """
@@ -91,6 +89,26 @@ class Timer(object):
         self._set_finish()
         return self._finish_ts - self._start_ts
 
+    @classmethod
+    def format(cls, seconds):
+        assert seconds >= 0
+        seconds = int(seconds)
+
+        if seconds < 60:
+            return '{} seconds'.format(seconds)
+        elif 60 <= seconds < 120:
+            return '{} minute {}'.format(seconds // 60, cls.format(seconds % 60))
+        elif 120 <= seconds < 3600:
+            return '{} minutes {}'.format(seconds // 60, cls.format(seconds % 60))
+        elif 3600 <= seconds < 7200:
+            return '{} hour {}'.format(seconds // 3600, cls.format(seconds % 3600))
+        elif 7200 <= seconds < 86400:
+            return '{} hours {}'.format(seconds // 3600, cls.format(seconds % 3600))
+        elif 86400 <= seconds < 172800:
+            return '{} day {}'.format(seconds // 86400, cls.format(seconds % 86400))
+        else:
+            return '{} days {}'.format(seconds // 86400, cls.format(seconds % 86400))
+
     def display_start(self, msg=None):
         Timer._display_datetime(self._start_ts, msg)
 
@@ -99,11 +117,14 @@ class Timer(object):
         Timer._display_datetime(self._finish_ts, msg)
 
     def display_cost(self, msg=None):
+        from .logging import it_print
+
         cost = self.cost()
         prefix = ''
         if msg:
-            prefix = 'job [{}]'.format(msg)
+            prefix = '[{}]'.format(msg)
         it_print('{} cost {} seconds'.format(prefix, cost))
+        it_print()
 
     def _set_finish(self):
         if self._finish_ts == self._invalid_ts:
@@ -111,6 +132,8 @@ class Timer(object):
 
     @staticmethod
     def _display_datetime(ts, msg=None):
+        from .logging import it_print
+
         _tmp_msg = current_datetime(ts)
         if msg is not None:
             if not msg.endswith(' '):

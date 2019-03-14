@@ -101,6 +101,7 @@ def timed(description=None):
             result = fn(*args, **kwargs)
             timer.display_finish('{} complete at'.format(_description))
             timer.display_cost(_description)
+
             return result
 
         return wrapper
