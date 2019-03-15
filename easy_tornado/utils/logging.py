@@ -2,6 +2,9 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/19 09:30
+from __future__ import division
+from __future__ import print_function
+
 import functools
 import sys
 
@@ -57,7 +60,7 @@ def it_print(message='', indent=None, device=1, newline=True, json_fmt=False):
     :type json_fmt: bool
     """
     global _enable
-    if not _enable:
+    if not _enable or device is None:
         return
 
     if message is None:
@@ -74,14 +77,14 @@ def it_print(message='', indent=None, device=1, newline=True, json_fmt=False):
         device = sys.stderr
     elif device == 1:
         device = sys.stdout
-    else:
-        # a file-like object
-        pass
 
-    device.write(message)
-    if newline:
-        device.write('\n')
-    device.flush()
+    # a file-like object
+    assert hasattr(device, 'write')
+
+    print(message,
+          file=device,
+          end='\n' if newline else '',
+          flush=True)
 
 
 def it_prints(message='', indent=None, indent_inner=2, device=1, newline=True):

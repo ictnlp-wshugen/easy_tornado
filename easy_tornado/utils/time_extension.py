@@ -6,6 +6,8 @@ from __future__ import division
 
 import time
 
+from .logging import it_print
+
 
 def current_timestamp():
     """
@@ -117,8 +119,6 @@ class Timer(object):
         Timer._display_datetime(self._finish_ts, msg)
 
     def display_cost(self, msg=None):
-        from .logging import it_print
-
         cost = self.cost()
         prefix = ''
         if msg:
@@ -132,7 +132,6 @@ class Timer(object):
 
     @staticmethod
     def _display_datetime(ts, msg=None):
-        from .logging import it_print
 
         _tmp_msg = current_datetime(ts)
         if msg is not None:
