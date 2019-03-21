@@ -242,14 +242,13 @@ def load_file_contents(path, pieces=True, strip=True):
 
     with open(path, 'r') as fp:
         lines = fp.readlines()
+        if strip:
+            lines = [x.strip() for x in lines]
+
         if pieces:
             return lines
 
-        if strip:
-            contents = ''.join([x.strip() for x in lines])
-        else:
-            contents = ''.join([x for x in lines])
-        return contents
+        return ''.join([x for x in lines])
 
 
 def write_line(wfp, line):
