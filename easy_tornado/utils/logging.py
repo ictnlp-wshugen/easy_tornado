@@ -9,6 +9,7 @@ import functools
 import sys
 
 from .str_extension import as_json
+from ..compat import python3
 
 
 def _add_indent(lines, space_cnt):
@@ -81,10 +82,11 @@ def it_print(message='', indent=None, device=1, newline=True, json_fmt=False):
     # a file-like object
     assert hasattr(device, 'write')
 
-    print(message,
-          file=device,
-          end='\n' if newline else '',
-          flush=True)
+    kwargs = dict(file=device,
+                  end='\n' if newline else '')
+    if python3:
+        kwargs['flush'] = True
+    print(message, **kwargs)
 
 
 def it_prints(message='', indent=None, indent_inner=2, device=1, newline=True):
