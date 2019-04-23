@@ -8,6 +8,7 @@ from collections import Iterable
 import six
 from six.moves import xrange
 
+from ..compat import C_StandardError
 from ..utils.str_extension import to_json
 
 
@@ -63,7 +64,7 @@ def request(request_url, data=None, as_json=True, timeout=None):
             # e.reason: 输出如，[Errno 61] Connection refused，但Mac和Unix的Errno不一样
             if str(e.reason).find('Connection refused') != -1:
                 raise TimeoutError
-        except StandardError as e:
+        except C_StandardError as e:
             if e.message == 'timed out':
                 raise TimeoutError
     else:
@@ -119,7 +120,7 @@ def fetch_available_port(host='127.0.0.1', used_ports=None, port_range=None):
             sk.bind((host, port))
             sk.close()
             return port
-        except StandardError as e:
+        except C_StandardError as e:
             if str(e.args[1]) == 'Address already in use':
                 continue
-    raise StandardError('Can\'t get any available port')
+    raise C_StandardError('Can\'t get any available port')
