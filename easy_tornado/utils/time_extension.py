@@ -99,17 +99,21 @@ class Timer(object):
         if seconds < 60:
             return '{} seconds'.format(seconds)
         elif 60 <= seconds < 120:
-            return '{} minute {}'.format(seconds // 60, cls.format(seconds % 60))
+            return cls._format('{} minute {}', seconds, 60)
         elif 120 <= seconds < 3600:
-            return '{} minutes {}'.format(seconds // 60, cls.format(seconds % 60))
+            return cls._format('{} minutes {}', seconds, 60)
         elif 3600 <= seconds < 7200:
-            return '{} hour {}'.format(seconds // 3600, cls.format(seconds % 3600))
+            return cls._format('{} hour {}', seconds, 3600)
         elif 7200 <= seconds < 86400:
-            return '{} hours {}'.format(seconds // 3600, cls.format(seconds % 3600))
+            return cls._format('{} hours {}', seconds, 3600)
         elif 86400 <= seconds < 172800:
-            return '{} day {}'.format(seconds // 86400, cls.format(seconds % 86400))
+            return cls._format('{} day {}', seconds, 86400)
         else:
-            return '{} days {}'.format(seconds // 86400, cls.format(seconds % 86400))
+            return cls._format('{} days {}', seconds, 86400)
+
+    @classmethod
+    def _format(cls, fmt, seconds, factor):
+        return fmt.format(seconds // factor, cls.format(seconds % factor))
 
     def display_start(self, msg=None):
         Timer._display_datetime(self._start_ts, msg)
@@ -122,7 +126,7 @@ class Timer(object):
         cost = self.cost()
         prefix = ''
         if msg:
-            prefix = '[{}]'.format(msg)
+            prefix = '{}'.format(msg)
         it_print('{} cost {} seconds'.format(prefix, cost))
         it_print()
 
