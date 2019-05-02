@@ -128,7 +128,6 @@ class Timer(object):
         if msg:
             prefix = '{}'.format(msg)
         it_print('{} cost {} seconds'.format(prefix, cost))
-        it_print()
 
     def _set_finish(self):
         if self._finish_ts == self._invalid_ts:
@@ -136,7 +135,6 @@ class Timer(object):
 
     @staticmethod
     def _display_datetime(ts, msg=None):
-
         _tmp_msg = current_datetime(ts)
         if msg is not None:
             if not msg.endswith(' '):

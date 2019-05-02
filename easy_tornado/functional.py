@@ -4,6 +4,7 @@
 # date: 2018/11/9 14:36
 from threading import Thread
 
+from .utils.logging import it_print
 from .utils.time_extension import Timer
 
 
@@ -77,10 +78,12 @@ def async_call(daemon=False, name=None):
     return function_wrapper
 
 
-def timed(description=None):
+def timed(description=None, num_pre_blanklines=0, num_suf_blanklines=0):
     """
     计时标记
     :param description: 计时描述
+    :param num_pre_blanklines: 输出计时前空行数
+    :param num_suf_blanklines: 输出计时后空行数
     :return: 包装函数
     """
 
@@ -96,11 +99,15 @@ def timed(description=None):
             if description is not None and not callable(description):
                 _description = description
 
+            if num_pre_blanklines > 0:
+                [it_print() for _ in range(num_pre_blanklines)]
             timer = Timer()
             timer.display_start('{} start at'.format(_description))
             result = fn(*args, **kwargs)
             timer.display_finish('{} complete at'.format(_description))
             timer.display_cost(_description)
+            if num_suf_blanklines > 0:
+                [it_print() for _ in range(num_pre_blanklines)]
 
             return result
 
