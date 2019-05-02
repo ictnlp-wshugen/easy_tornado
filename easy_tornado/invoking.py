@@ -18,14 +18,15 @@ BG_MARK = '&'
 def _get_log_paths(log_prefix):
     time_suffix = current_datetime_str_s()
 
-    def refine_path(log_path):
+    def refine_path(prefix, suffix):
+        log_path = '{}.{}'.format(prefix, suffix)
         if file_exists(log_path):
-            log_path = '{}.{}'.format(log_path, time_suffix)
+            log_path = '{}.{}.{}'.format(prefix, time_suffix, suffix)
         return log_path
 
-    cmd_path = refine_path('{}.cmd'.format(log_prefix))
-    out_path = refine_path('{}.out'.format(log_prefix))
-    err_path = refine_path('{}.err'.format(log_prefix))
+    cmd_path = refine_path(log_prefix, 'cmd')
+    out_path = refine_path(log_prefix, 'out')
+    err_path = refine_path(log_prefix, 'err')
 
     return cmd_path, out_path, err_path
 
