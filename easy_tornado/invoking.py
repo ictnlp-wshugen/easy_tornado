@@ -2,16 +2,32 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/14 16:30
-import io
+import codecs
 import subprocess
 import warnings
 
-import six
-
+from .compat import python2
+from .utils.file_operation import file_exists
 from .utils.file_operation import write_file_contents
+from .utils.time_extension import current_datetime_str_s
 
 NOHUP = 'nohup'
 BG_MARK = '&'
+
+
+def _get_log_paths(log_prefix):
+    time_suffix = current_datetime_str_s()
+
+    def refine_path(log_path):
+        if file_exists(log_path):
+            log_path = '{}.{}'.format(log_path, time_suffix)
+        return log_path
+
+    cmd_path = refine_path('{}.cmd'.format(log_prefix))
+    out_path = refine_path('{}.out'.format(log_prefix))
+    err_path = refine_path('{}.err'.format(log_prefix))
+
+    return cmd_path, out_path, err_path
 
 
 def shell_invoke(command, **kwargs):
@@ -33,24 +49,31 @@ def shell_invoke(command, **kwargs):
     daemon = kwargs.pop('daemon', False)
     on_error = kwargs.pop('on_error', None)
     if on_error is not None and not callable(on_error):
-        raise TypeError('on_error must be of callable, but got {}'.format(type(on_error)))
+        message = 'on_error must be of callable, but got {}'
+        raise TypeError(message.format(type(on_error)))
 
     command = command.strip()
     if command == '' or command.startswith(NOHUP) or command.endswith(BG_MARK):
-        raise ValueError('command should be a string not start with nohup and not end with &, '
-                         'but got "{}"'.format(command))
+        raise ValueError('command should be a string not start with nohup and '
+                         'not end with &, but got "{}"'.format(command))
 
     stdout, stderr = None, None
     if log_prefix is not None:
-        write_file_contents('{}.cmd'.format(log_prefix), command)
-        stdout = io.open('{}.out'.format(log_prefix), mode='w', encoding='utf-8')
-        stderr = stdout if debug else io.open('{}.err'.format(log_prefix), mode='w', encoding='utf-8')
+        cmd_path, out_path, err_path = _get_log_paths(log_prefix)
+        write_file_contents(cmd_path, command)
+        stdout = codecs.open(out_path, mode='w', encoding='utf-8')
+        if not debug:
+            stderr = codecs.open(err_path, mode='w', encoding='utf-8')
+        else:
+            stderr = stdout
 
     if daemon:
         command = '{} {} {}'.format(NOHUP, command, BG_MARK)
 
     try:
-        return subprocess.check_call(command, shell=True, stdout=stdout, stderr=stderr)
+        return subprocess.check_call(
+            command, shell=True, stdout=stdout, stderr=stderr
+        )
     except subprocess.CalledProcessError as e:
         if on_error:
             on_error(e)
@@ -65,7 +88,8 @@ def executable_exists(executable):
     :return: 检测结果, 若存在，返回True, 否则返回False
     """
     try:
-        subprocess.check_call('which {} >/dev/null'.format(executable), shell=True)
+        cmd = 'which {} >/dev/null'.format(executable)
+        subprocess.check_call(cmd, shell=True)
     except subprocess.CalledProcessError:
         return False
     return True
@@ -88,7 +112,8 @@ def _python_invoke(command, **kwargs):
     """
     command = command.strip()
     if command == '' or command.startswith('python'):
-        raise ValueError('python command should be a string not start with python')
+        message = 'python command should be a string not start with python'
+        raise ValueError(message)
 
     interpreter = kwargs.pop('interpreter', None)
     if interpreter is None:
@@ -102,9 +127,10 @@ def _python_invoke(command, **kwargs):
                 'interpreter': interpreter,
                 'alternative': alternative
             }
-            message = '{interpreter} not exists, so use {alternative} as interpreter, ' \
-                      'ensure that {alternative} is actually the same as {interpreter}'.format(**params)
-            warnings.warn(message)
+            message = '{interpreter} not exists, so use {alternative} as ' \
+                      'interpreter, ensure that {alternative} is actually ' \
+                      'the same as {interpreter}'
+            warnings.warn(message.format(**params))
             interpreter = 'python'
 
     command = '{} -u {}'.format(interpreter, command)
@@ -121,4 +147,4 @@ def python3_invoke(command, **kwargs):
     return _python_invoke(command, **kwargs)
 
 
-python_invoke = python2_invoke if six.PY2 else python3_invoke
+python_invoke = python2_invoke if python2 else python3_invoke
