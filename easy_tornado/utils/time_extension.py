@@ -87,9 +87,37 @@ class Timer(object):
         self._finish_ts = time.time()
         return self.finish_ts
 
+    @property
+    def stopped(self):
+        return self._finish_ts != self._invalid_ts
+
     def cost(self):
         self._set_finish()
         return self._finish_ts - self._start_ts
+
+    def state_dict(self):
+        return {
+            'start_ts': self.start_ts,
+            'finish_ts': self.finish_ts
+        }
+
+    def load_state_dict_(self, state_dict):
+        self._start_ts = state_dict['start_ts']
+        self._finish_ts = state_dict['finish_ts']
+
+    def display_start(self, msg=None):
+        Timer._display_datetime(self._start_ts, msg)
+
+    def display_finish(self, msg=None):
+        self._set_finish()
+        Timer._display_datetime(self._finish_ts, msg)
+
+    def display_cost(self, msg=None):
+        cost = self.cost()
+        prefix = ''
+        if msg:
+            prefix = '{}'.format(msg)
+        it_print('{} cost {}'.format(prefix, self.format(cost)))
 
     @classmethod
     def format(cls, seconds):
@@ -111,26 +139,8 @@ class Timer(object):
         else:
             return cls._format('{} days {}', seconds, 86400)
 
-    @classmethod
-    def _format(cls, fmt, seconds, factor):
-        return fmt.format(seconds // factor, cls.format(seconds % factor))
-
-    def display_start(self, msg=None):
-        Timer._display_datetime(self._start_ts, msg)
-
-    def display_finish(self, msg=None):
-        self._set_finish()
-        Timer._display_datetime(self._finish_ts, msg)
-
-    def display_cost(self, msg=None):
-        cost = self.cost()
-        prefix = ''
-        if msg:
-            prefix = '{}'.format(msg)
-        it_print('{} cost {} seconds'.format(prefix, cost))
-
     def _set_finish(self):
-        if self._finish_ts == self._invalid_ts:
+        if not self.stopped:
             self.finish()
 
     @staticmethod
@@ -141,3 +151,15 @@ class Timer(object):
                 msg += ' '
             _tmp_msg = msg + _tmp_msg
         it_print(_tmp_msg)
+
+    @classmethod
+    def _format(cls, fmt, seconds, factor):
+        return fmt.format(seconds // factor, cls.format(seconds % factor))
+
+    def __repr__(self):
+        msg = ['start at {}'.format(current_datetime(self.start_ts))]
+        if self.stopped:
+            msg.append('finished at {}'.format(
+                current_datetime(self.finish_ts)
+            ))
+        return ', '.join(msg)
