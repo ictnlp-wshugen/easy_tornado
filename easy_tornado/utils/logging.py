@@ -76,6 +76,7 @@ def it_print(message='', indent=None, device=1, newline=True, json_fmt=False):
 
     if device == 2:
         device = sys.stderr
+        message = '\033[0;31m%s\033[0m' % message
     elif device == 1:
         device = sys.stdout
 
