@@ -104,7 +104,7 @@ def create_if_not_exists(path):
         raise ValueError('path {} exists but is not a directory')
 
     if not os.path.exists(path):
-        os.makedirs(path)
+        os.makedirs(path, exist_ok=True)
 
 
 @deprecated(new_fn=create_if_not_exists)
