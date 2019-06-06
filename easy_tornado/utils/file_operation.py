@@ -72,8 +72,8 @@ def get_file_lines(path):
     """
     if not file_exists(path):
         return -1
-    lines = os.popen(r"wc -l %s | awk '{print $1}'" % path).read()
-    return int(lines)
+
+    return sum(1 for _ in open(path))
 
 
 def remove_file(path, ignore_errors=True):
