@@ -21,7 +21,7 @@ def _get_log_paths(log_prefix):
     def refine_path(prefix, suffix):
         log_path = '{}.{}'.format(prefix, suffix)
         if file_exists(log_path):
-            log_path = '{}.{}.{}'.format(prefix, time_suffix, suffix)
+            log_path = '{}.{}'.format(log_path, time_suffix)
         return log_path
 
     cmd_path = refine_path(log_prefix, 'cmd')
