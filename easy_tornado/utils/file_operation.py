@@ -295,6 +295,17 @@ def write_iterable_as_lines(path, iterable_obj, obj2line_func=lambda x: x):
 
 
 @contextmanager
+def work_dir(path=None):
+    cwd = os.getcwd()
+    try:
+        if path is not None:
+            os.chdir(path)
+            yield
+    finally:
+        os.chdir(cwd)
+
+
+@contextmanager
 def mkdtemp():
     """
     创建临时路径, 并在退出域时删除该路径

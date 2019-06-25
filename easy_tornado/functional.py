@@ -2,6 +2,7 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/9 14:36
+from contextlib import contextmanager
 from threading import Thread
 
 from .utils.logging import it_print
@@ -117,3 +118,8 @@ def timed(description=None, num_pre_blanklines=0, num_suf_blanklines=0):
         return function_wrapper(fn=description)
 
     return function_wrapper
+
+
+@contextmanager
+def none_context():
+    yield
