@@ -108,7 +108,8 @@ def fetch_available_port(host='127.0.0.1', used_ports=None, port_range=None):
         port_range = xrange(50000, 63000)
     else:
         if not isinstance(port_range, Iterable):
-            raise ValueError('port_range should be of Iterable type, but got {}'.format(type(port_range)))
+            s = 'port_range should be of Iterable type, but got {}'
+            raise ValueError(s.format(type(port_range)))
 
     for port in port_range:
         if port in used_ports:

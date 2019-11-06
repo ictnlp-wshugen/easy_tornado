@@ -55,8 +55,11 @@ def shell_invoke(command, **kwargs):
 
     command = command.strip()
     if command == '' or command.startswith(NOHUP) or command.endswith(BG_MARK):
-        raise ValueError('command should be a string not start with nohup and '
-                         'not end with &, but got "{}"'.format(command))
+        s = (
+            'command should be a string not start with nohup '
+            'and not end with &, but got "{}"'
+        )
+        raise ValueError(s.format(command))
 
     stdout, stderr = None, None
     if log_prefix is not None:
@@ -128,9 +131,11 @@ def _python_invoke(command, **kwargs):
                 'interpreter': interpreter,
                 'alternative': alternative
             }
-            message = '{interpreter} not exists, so use {alternative} as ' \
-                      'interpreter, ensure that {alternative} is actually ' \
-                      'the same as {interpreter}'
+            message = (
+                '{interpreter} not exists, so use {alternative} as '
+                'interpreter, ensure that {alternative} is actually '
+                'the same as {interpreter}'
+            )
             warnings.warn(message.format(**params))
             interpreter = 'python'
 

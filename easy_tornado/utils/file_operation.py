@@ -150,7 +150,12 @@ def is_abspath(file_path):
     :param file_path: 文件路径
     :return: 若为绝对路径返回True, 否则返回False
     """
-    return file_path is not None and isinstance(file_path, str) and file_path.startswith('/')
+    cond = file_path is not None and isinstance(file_path, str)
+    return cond and file_path.startswith('/')
+
+
+def basename(file_path):
+    return os.path.basename(file_path)
 
 
 def refine_path(base_path, holder, key):
@@ -165,7 +170,8 @@ def refine_path(base_path, holder, key):
     elif isinstance(holder, list):
         assert isinstance(key, int) and 0 <= key < len(holder)
     else:
-        raise TypeError('holder should be either dict or list, but got {}'.format(type(holder)))
+        s = 'holder should be either dict or list, but got {}'
+        raise TypeError(s.format(type(holder)))
 
     if not is_abspath(holder[key]):
         holder[key] = cp(base_path, holder[key])
@@ -201,13 +207,15 @@ def file_append(path_append_to, path_append_from):
         'path_append_to': path_append_to
     }
     if not file_exists(path_append_to):
-        cmd_create_str = 'cp {path_append_from} {path_append_to}'.format(**kwargs)
+        cmd_create_fmt = 'cp {path_append_from} {path_append_to}'
+        cmd_create_str = cmd_create_fmt.format(**kwargs)
         try:
             subprocess.check_call(cmd_create_str, shell=True)
         except subprocess.CalledProcessError:
             return False
     else:
-        cmd_append_str = 'cat {path_append_from} >> {path_append_to}'.format(**kwargs)
+        cmd_append_fmt = 'cat {path_append_from} >> {path_append_to}'
+        cmd_append_str = cmd_append_fmt.format(**kwargs)
         try:
             subprocess.check_call(cmd_append_str, shell=True)
         except subprocess.CalledProcessError:
@@ -335,7 +343,8 @@ def open_files(*paths, **kwargs):
 
     open_fn = kwargs.pop('open_fn', io.open)
     if not callable(open_fn):
-        raise TypeError('open_fn should be callable type, but got {}'.format(type(open_fn)))
+        s = 'open_fn should be callable type, but got {}'
+        raise TypeError(s.format(type(open_fn)))
 
     for path in paths:
         handles.append(open_fn(path, **kwargs))

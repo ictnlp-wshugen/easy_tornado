@@ -23,23 +23,31 @@ def deprecated(new_fn=None, version=1.0):
         assert callable(fn)
 
         def wrapper(*args, **kwargs):
+            if version is None:
+                future = 'the future'
+            else:
+                future = 'version {}'.format(str(version))
             params = {
                 'newline': '\n',
                 'fn_module': fn.__module__,
                 'fn_name': fn.__name__,
-                'future': 'the future' if version is None else 'version {}'.format(str(version))
+                'future': future
             }
-            message_fmt = '{newline}' \
-                          'some of your code has used "{fn_name}" from {fn_module},' \
-                          '{newline}' \
-                          'this is marked as deprecated in current version, ' \
-                          'and maybe will be removed in {future}'
+            message_fmt = (
+                '{newline}'
+                'some of your code has used "{fn_name}" from {fn_module},'
+                '{newline}'
+                'this is marked as deprecated in current version, '
+                'and maybe will be removed in {future}'
+            )
 
             if new_fn is not None:
                 params['new_fn_module'] = new_fn.__module__
                 params['new_fn_name'] = new_fn.__name__
-                message_fmt += '{newline}' \
-                               'use "{new_fn_name}" from {new_fn_module} instead'
+                message_fmt += (
+                    '{newline}'
+                    'use "{new_fn_name}" from {new_fn_module} instead'
+                )
             message = message_fmt.format(**params)
 
             from warnings import warn
