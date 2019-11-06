@@ -262,24 +262,28 @@ def write_line(wfp, line):
         wfp.write('\n')
 
 
-def write_file_contents(path, contents):
+def write_file_contents(path, contents, newline=False):
     """
     写入内容至文件
     :param path: 文件路径
     :param contents: 待写入内容
+    :param newline: 是否追加新行
     """
     with open(path, 'w') as wfp:
         wfp.write(contents)
+        if newline:
+            wfp.write('\n')
 
 
-def write_json_contents(path, data):
+def write_json_contents(path, data, newline=False):
     """
     写入JSON内容
     :param path: 文件路径
     :param data: 待写入数据
+    :param newline: 是否追加新行
     """
     json_str = to_json(data)
-    write_file_contents(path, json_str)
+    write_file_contents(path, json_str, newline=newline)
 
 
 def write_iterable_as_lines(path, iterable_obj, obj2line_func=lambda x: x):
