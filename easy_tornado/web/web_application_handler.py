@@ -5,13 +5,14 @@
 import json
 
 from tornado.httpclient import AsyncHTTPClient
-from tornado.web import RequestHandler, asynchronous
+from tornado.web import RequestHandler
+from tornado.web import asynchronous
 
 from ..compat import utf8decode
-from ..utils.http_test import json_print
+from ..utils.httpclient import json_print
 from ..utils.logging import it_print
-from ..utils.str_extension import to_json
-from ..utils.time_extension import current_datetime
+from ..utils.stringext import to_json
+from ..utils.timeext import current_datetime
 
 
 class WebApplicationHandler(RequestHandler):

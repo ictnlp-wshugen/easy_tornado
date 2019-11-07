@@ -5,10 +5,10 @@
 from __future__ import print_function
 
 from .logging import it_print
-from .str_extension import parse_json
-from .str_extension import to_json
-from .time_extension import Timer
-from .web_extension import request
+from .stringext import parse_json
+from .stringext import to_json
+from .timeext import Timer
+from .webext import request
 from ..functional import deprecated
 
 

@@ -8,14 +8,14 @@ import os
 import shutil
 import subprocess
 import tempfile
-from collections import Iterable
 from functools import partial
 
 from decorator import contextmanager
 
-from .str_extension import to_json
-from .. import deprecated
-from .. import utf8encode
+from .collext import Iterable
+from .stringext import to_json
+from ..compat import utf8encode
+from ..functional import deprecated
 
 
 def abspath(file_obj):
@@ -284,7 +284,7 @@ def write_json_contents(path, data, newline=False):
     write_file_contents(path, json_str, newline=newline)
 
 
-def write_iterable(path, iterable_obj, obj2line_func=lambda x: x):
+def write_iterable_contents(path, iterable_obj, obj2line_func=lambda x: x):
     """
         将可迭代的数据按行的形式写入文件
         :param path: 文件路径
@@ -370,6 +370,6 @@ def get_file_lines(path):
     return file_lines(path)
 
 
-@deprecated(new_fn=write_iterable)
+@deprecated(new_fn=write_iterable_contents)
 def write_iterable_as_lines(*args, **kwargs):
-    write_iterable(*args, **kwargs)
+    write_iterable_contents(*args, **kwargs)

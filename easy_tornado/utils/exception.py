@@ -3,8 +3,8 @@
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/19 11:03
 from .logging import it_print
-from .. import C_StandardError
-from .. import deprecated
+from ..compat import C_StandardError
+from ..functional import deprecated
 
 
 class InternalError(C_StandardError):

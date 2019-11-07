@@ -8,7 +8,7 @@ from __future__ import print_function
 import functools
 import sys
 
-from .str_extension import as_json
+from .stringext import as_json
 from ..compat import python3
 
 

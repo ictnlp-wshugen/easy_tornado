@@ -5,9 +5,9 @@
 import signal
 from os import kill
 
-from .file_operation import file_exists
-from .file_operation import load_file_contents
-from .file_operation import remove_file
+from .fileops import file_exists
+from .fileops import load_file_contents
+from .fileops import remove_file
 
 
 def kill_process(pid_path, signum=None):

@@ -3,13 +3,13 @@
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/19 11:32
 import urllib
-from collections import Iterable
 
 import six
 from six.moves import xrange
 
+from .collext import Iterable
+from .stringext import to_json
 from ..compat import C_StandardError
-from ..utils.str_extension import to_json
 
 
 class TimeoutError(Exception):
