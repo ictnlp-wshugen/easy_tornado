@@ -50,3 +50,5 @@ from .time_extension import current_datetime_str
 from .time_extension import current_datetime_str
 from .time_extension import current_datetime_str_s
 from .time_extension import current_timestamp
+from .validation import contain_keys
+from .validation import in_range
