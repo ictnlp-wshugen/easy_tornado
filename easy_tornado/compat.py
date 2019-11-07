@@ -6,6 +6,8 @@ import sys
 
 import six
 
+from .functional import deprecated
+
 python2 = six.PY2
 python3 = six.PY3
 
@@ -66,7 +68,7 @@ TYPE_FUNCTION = "<{} 'function'>".format(TYPE_NAME)
 TYPE_CLASS = "<{} 'type'>".format(TYPE_NAME)
 
 
-def happy_move_functions(new_module, *functions):
+def compatibility_warning(new_module, *functions):
     """
     用于无警告移动函数
     :param new_module: 新模块
@@ -93,10 +95,25 @@ def happy_move_functions(new_module, *functions):
         'moved_functions': ','.join(moved_functions),
 
     }
-    message = (
-        'function moved warnings {class_count} class and {func_count} '
-        'function has been moved to "{module_name}". moved classes: '
-        '"{moved_classes} moved functions: "{moved_functions}" please '
-        'update to the newest version as soon as possible.'
-    )
-    warnings.warn(message.format(**kwargs))
+
+    fmts = ['\n', 'Compatibility warning!\n']
+    _fmts = ['  ']
+    if class_count > 0:
+        _fmts.append('{class_count} classes and ')
+    if func_count > 0:
+        _fmts.append('{func_count} functions ')
+    _fmts.append('have been moved to "{module_name}".\n')
+    fmts.append(''.join(_fmts))
+
+    if class_count > 0:
+        fmts.append('  classes: "{moved_classes}".\n')
+    if func_count > 0:
+        fmts.append('  functions: "{moved_functions}".\n')
+    fmts.append('  please upgrade to the newest version.')
+
+    warnings.warn(''.join(fmts).format(**kwargs))
+
+
+@deprecated(new_fn=compatibility_warning)
+def happy_move_functions(*args, **kwargs):
+    compatibility_warning(*args, **kwargs)

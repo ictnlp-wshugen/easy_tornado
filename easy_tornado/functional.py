@@ -24,31 +24,33 @@ def deprecated(new_fn=None, version=1.0):
                 future = 'the future'
             else:
                 future = 'version {}'.format(str(version))
+
             params = {
-                'newline': '\n',
                 'fn_module': fn.__module__,
                 'fn_name': fn.__name__,
                 'future': future
             }
-            message_fmt = (
-                '{newline}'
-                'some of your code has used "{fn_name}" from {fn_module},'
-                '{newline}'
-                'this is marked as deprecated in current version, '
-                'and maybe will be removed in {future}'
-            )
+            fmts = list(['\n', 'Deprecated warning!\n'])
+            fmts.append((
+                '  some of your code are using deprecated function: \n'
+            ))
+            fmts.append((
+                '    [{fn_name}] from [{fn_module}].\n'
+            ))
+            fmts.append((
+                '  the deprecated will be removed in {future}.\n'
+            ))
 
             if new_fn is not None:
                 params['new_fn_module'] = new_fn.__module__
                 params['new_fn_name'] = new_fn.__name__
-                message_fmt += (
-                    '{newline}'
-                    'use "{new_fn_name}" from {new_fn_module} instead'
-                )
-            message = message_fmt.format(**params)
+                fmts.append((
+                    '  use [{new_fn_name}] from [{new_fn_module}] instead.'
+                    ''))
 
-            from warnings import warn
-            warn(message)
+            import warnings
+            message = ''.join(fmts)
+            warnings.warn(message.format(**params))
 
             return fn(*args, **kwargs)
 
