@@ -56,7 +56,10 @@ def request(request_url, data=None, as_json=True, timeout=None):
         req = Request(request_url)
         opener = build_opener(HTTPCookieProcessor())
         if data is not None:
-            data = to_json(data, utf8=True) if as_json else urllib.urlencode(data)
+            if as_json:
+                data = to_json(data, utf8=True)
+            else:
+                data = urllib.urlencode(data)
         try:
             response = opener.open(req, data, **kwargs)
             result = response.read()
@@ -84,7 +87,8 @@ def request(request_url, data=None, as_json=True, timeout=None):
             response = http.request('POST', request_url, **kwargs)
             result = response.data
         except RequestError as e:
-            if isinstance(e, MaxRetryError) and isinstance(e.reason, NewConnectionError):
+            if isinstance(e, MaxRetryError) \
+                    and isinstance(e.reason, NewConnectionError):
                 raise TimeoutError
             if isinstance(e, ReadTimeoutError):
                 raise TimeoutError
