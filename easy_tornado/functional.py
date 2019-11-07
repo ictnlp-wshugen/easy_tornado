@@ -5,9 +5,6 @@
 from contextlib import contextmanager
 from threading import Thread
 
-from .utils.logging import it_print
-from .utils.time_extension import Timer
-
 
 def deprecated(new_fn=None, version=1.0):
     """
@@ -83,47 +80,6 @@ def async_call(daemon=False, name=None):
             t.start()
 
         return wrapper
-
-    return function_wrapper
-
-
-def timed(description=None, num_pre_blanklines=0, num_suf_blanklines=0):
-    """
-    计时标记
-    :param description: 计时描述
-    :param num_pre_blanklines: 输出计时前空行数
-    :param num_suf_blanklines: 输出计时后空行数
-    :return: 包装函数
-    """
-
-    def function_wrapper(fn):
-        """
-            标记为统计运行时间的函数
-            :param fn: 被测函数
-            """
-        assert callable(fn)
-
-        def wrapper(*args, **kwargs):
-            _description = fn.__name__
-            if description is not None and not callable(description):
-                _description = description
-
-            if num_pre_blanklines > 0:
-                [it_print() for _ in range(num_pre_blanklines)]
-            timer = Timer()
-            timer.display_start('{} start at'.format(_description))
-            result = fn(*args, **kwargs)
-            timer.display_finish('{} complete at'.format(_description))
-            timer.display_cost(_description)
-            if num_suf_blanklines > 0:
-                [it_print() for _ in range(num_pre_blanklines)]
-
-            return result
-
-        return wrapper
-
-    if callable(description):
-        return function_wrapper(fn=description)
 
     return function_wrapper
 

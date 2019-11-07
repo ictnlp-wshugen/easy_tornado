@@ -9,7 +9,6 @@ from .filtering import filter_module_methods
 from .functional import async_call
 from .functional import deprecated
 from .functional import none_context
-from .functional import timed
 from .invoking import executable_exists
 from .invoking import python2_invoke
 from .invoking import python3_invoke

@@ -14,8 +14,8 @@ from functools import partial
 from decorator import contextmanager
 
 from .str_extension import to_json
-from ..compat import utf8encode
-from ..functional import deprecated
+from .. import deprecated
+from .. import utf8encode
 
 
 def abspath(file_obj):
