@@ -74,10 +74,8 @@ def happy_move_functions(new_module, *functions):
     """
     import warnings
 
-    func_count = 0
-    class_count = 0
-    moved_classes = []
-    moved_functions = []
+    class_count, func_count = 0, 0
+    moved_classes, moved_functions = [], []
     for fn in functions:
         type_name = str(type(fn))
         if type_name == TYPE_CLASS:
@@ -95,9 +93,10 @@ def happy_move_functions(new_module, *functions):
         'moved_functions': ','.join(moved_functions),
 
     }
-    message = '''function moved warnings
-{class_count} class and {func_count} function has been moved to "{module_name}".
-moved classes: "{moved_classes}"
-moved functions: "{moved_functions}"
-please update to the newest version as soon as possible.'''.format(**kwargs)
-    warnings.warn(message)
+    message = (
+        'function moved warnings {class_count} class and {func_count} '
+        'function has been moved to "{module_name}". moved classes: '
+        '"{moved_classes} moved functions: "{moved_functions}" please '
+        'update to the newest version as soon as possible.'
+    )
+    warnings.warn(message.format(**kwargs))
