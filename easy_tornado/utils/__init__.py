@@ -40,3 +40,8 @@ from .logging import it_prints
 from .logging import set_print_disable
 from .logging import set_print_enable
 from .monitoring import kill_process
+from .str_extension import as_json
+from .str_extension import from_json
+from .str_extension import md5sum
+from .str_extension import parse_json
+from .str_extension import to_json
