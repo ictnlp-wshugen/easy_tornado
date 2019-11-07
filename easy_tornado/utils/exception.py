@@ -19,9 +19,7 @@ def raise_print(*args, **kwargs):
     :param args: see it_print
     :param kwargs: it_print
     """
-    if 'device' not in kwargs:
-        kwargs['device'] = 2
-    it_print(*args, **kwargs)
+    _do_print(*args, **kwargs)
     message = kwargs.pop('message', 'Unknown')
     raise InternalError(message)
 
@@ -32,11 +30,17 @@ def exit_print(*args, **kwargs):
     :param args: see it_print
     :param kwargs: see it_print
     """
-    if 'device' not in kwargs:
-        kwargs['device'] = 2
-    it_print(*args, **kwargs)
+    _do_print(*args, **kwargs)
     errno = kwargs.pop('errno', 0)
     exit(int(errno))
+
+
+def _do_print(*args, **kwargs):
+    if 'device' not in kwargs:
+        kwargs['device'] = 2
+
+    print_fn = kwargs.pop('print_fn', it_print)
+    print_fn(*args, **kwargs)
 
 
 @deprecated(new_fn=exit_print)

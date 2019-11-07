@@ -6,7 +6,7 @@ from contextlib import contextmanager
 from threading import Thread
 
 
-def deprecated(new_fn=None, version=1.0):
+def deprecated(new_fn=None, version='0.7'):
     """
     标记为弃用 decorator
     :param new_fn: 新的替代函数
