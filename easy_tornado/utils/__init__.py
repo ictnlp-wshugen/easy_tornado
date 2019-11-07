@@ -39,3 +39,4 @@ from .logging import it_print
 from .logging import it_prints
 from .logging import set_print_disable
 from .logging import set_print_enable
+from .monitoring import kill_process
