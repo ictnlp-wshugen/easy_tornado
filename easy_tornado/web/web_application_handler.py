@@ -74,19 +74,29 @@ class WebApplicationHandler(RequestHandler):
 
     # 转发请求
     @asynchronous
-    def forward(self, url, data=None, callback=None, method='POST', timeout=3600):
+    def forward(self, url, data=None, callback=None,
+                method='POST', timeout=3600):
         if callback is None:
             callback = self.response
+
         if data is None:
             data = {}
+
         json_data = to_json(data)
         client = AsyncHTTPClient()
-        client.fetch(url, body=json_data, callback=callback, method=method, request_timeout=timeout)
+        client.fetch(
+            url,
+            body=json_data,
+            callback=callback,
+            method=method,
+            request_timeout=timeout
+        )
 
     def success_response(self, data=None):
         self.error_response(self.none, self.error_mapper[self.none], data)
 
-    def error_response(self, error_no=invalid_request, error_desc=None, data=None):
+    def error_response(self, error_no=invalid_request,
+                       error_desc=None, data=None):
         res = data
         if not data:
             res = dict()
