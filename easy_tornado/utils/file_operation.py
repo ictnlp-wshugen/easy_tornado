@@ -55,7 +55,7 @@ def file_exists(path):
     return os.path.islink(path) or os.path.exists(path)
 
 
-def get_file_size(path):
+def file_size(path):
     """
     获取文件大小
     :param path: 文件路径
@@ -64,7 +64,7 @@ def get_file_size(path):
     return os.path.getsize(path)
 
 
-def get_file_lines(path):
+def file_lines(path):
     """
     获取文件行数, 通过Shell命令
     :param path: 文件路径
@@ -107,11 +107,6 @@ def create_if_not_exists(path):
         os.makedirs(path, exist_ok=True)
 
 
-@deprecated(new_fn=create_if_not_exists)
-def create_if_not_exist_path(file_path):
-    create_if_not_exists(file_path)
-
-
 def concat_path(base_path, sub_path=None, utf8=False):
     """
     拼接路径
@@ -137,11 +132,6 @@ cp = concat_path
     拼接作为C库的路径参数
 """
 clp = partial(concat_path, utf8=True)
-
-
-@deprecated(new_fn=concat_path)
-def format_path(base_path, sub_path):
-    return concat_path(base_path, sub_path)
 
 
 def is_abspath(file_path):
@@ -223,20 +213,6 @@ def file_append(path_append_to, path_append_from):
     return True
 
 
-@deprecated(new_fn=file_append)
-def append_to_file(path_append_to, path_append_from):
-    return file_append(path_append_to, path_append_from)
-
-
-def write_pid(path):
-    """
-    将pid写入到路径所在文件
-    :param path: 路径
-    """
-    with open(path, 'w') as fp:
-        fp.write(str(os.getpid()))
-
-
 def load_file_contents(path, pieces=True, strip=True):
     """
     读取文件内容
@@ -259,6 +235,11 @@ def load_file_contents(path, pieces=True, strip=True):
         return ''.join([x for x in lines])
 
 
+def load_json_contents(path):
+    contents = load_file_contents(path, pieces=False, strip=True)
+    return to_json(contents)
+
+
 def write_line(wfp, line):
     """
     向文件中写入一行
@@ -268,6 +249,15 @@ def write_line(wfp, line):
     if wfp:
         wfp.write(line.strip())
         wfp.write('\n')
+
+
+def write_pid(path):
+    """
+    将pid写入到路径所在文件
+    :param path: 路径
+    """
+    with open(path, 'w') as fp:
+        fp.write(str(os.getpid()))
 
 
 def write_file_contents(path, contents, newline=False):
@@ -294,13 +284,13 @@ def write_json_contents(path, data, newline=False):
     write_file_contents(path, json_str, newline=newline)
 
 
-def write_iterable_as_lines(path, iterable_obj, obj2line_func=lambda x: x):
+def write_iterable(path, iterable_obj, obj2line_func=lambda x: x):
     """
-    将可迭代的数据按行的形式写入文件
-    :param path: 文件路径
-    :param iterable_obj: 可迭代对象
-    :param obj2line_func: 将对象映射为行的函数
-    """
+        将可迭代的数据按行的形式写入文件
+        :param path: 文件路径
+        :param iterable_obj: 可迭代对象
+        :param obj2line_func: 将对象映射为行的函数
+        """
     with open(path, 'w') as wfp:
         for obj in iterable_obj:
             write_line(wfp, obj2line_func(obj))
@@ -353,3 +343,33 @@ def open_files(*paths, **kwargs):
 
     for handle in handles:
         handle.close()
+
+
+@deprecated(new_fn=file_append)
+def append_to_file(path_append_to, path_append_from):
+    return file_append(path_append_to, path_append_from)
+
+
+@deprecated(new_fn=create_if_not_exists)
+def create_if_not_exist_path(file_path):
+    create_if_not_exists(file_path)
+
+
+@deprecated(new_fn=concat_path)
+def format_path(base_path, sub_path):
+    return concat_path(base_path, sub_path)
+
+
+@deprecated(new_fn=file_size)
+def get_file_size(path):
+    return file_size(path)
+
+
+@deprecated(new_fn=file_lines)
+def get_file_lines(path):
+    return file_lines(path)
+
+
+@deprecated(new_fn=write_iterable)
+def write_iterable_as_lines(*args, **kwargs):
+    write_iterable(*args, **kwargs)

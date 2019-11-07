@@ -5,7 +5,8 @@
 from __future__ import print_function
 
 from .logging import it_print
-from .str_extension import parse_json, to_json
+from .str_extension import parse_json
+from .str_extension import to_json
 from .time_extension import Timer
 from .web_extension import request
 from ..functional import deprecated
@@ -49,11 +50,6 @@ def json_print(data):
     :param data: 待打印数据
     """
     it_print(to_json(data, indent=2, sort_keys=True, ensure_ascii=False))
-
-
-@deprecated(new_fn=json_print)
-def print_dict_json(data_dict):
-    json_print(data_dict)
 
 
 def print_json(json_string):
@@ -119,3 +115,8 @@ class HttpTest(object):
 
     def request(self, uri, data=None, as_json=True, timeout=None):
         return self.request_url('{}{}'.format(self.url, uri), data, as_json, timeout)
+
+
+@deprecated(new_fn=json_print)
+def print_dict_json(data_dict):
+    json_print(data_dict)
