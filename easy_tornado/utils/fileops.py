@@ -13,6 +13,7 @@ from functools import partial
 from decorator import contextmanager
 
 from .collext import Iterable
+from .stringext import from_json
 from .stringext import to_json
 from ..compat import utf8encode
 from ..functional import deprecated
@@ -237,7 +238,7 @@ def load_file_contents(path, pieces=True, strip=True):
 
 def load_json_contents(path):
     contents = load_file_contents(path, pieces=False, strip=True)
-    return to_json(contents)
+    return from_json(contents)
 
 
 def write_line(wfp, line):
