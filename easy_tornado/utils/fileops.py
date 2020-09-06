@@ -214,7 +214,7 @@ def file_append(path_append_to, path_append_from):
     return True
 
 
-def load_file_contents(path, pieces=True, strip=True):
+def load_file_contents(path, pieces=True, strip=True, **openflags):
     """
     读取文件内容
     :param path: 文件路径
@@ -225,7 +225,10 @@ def load_file_contents(path, pieces=True, strip=True):
     if not file_exists(path):
         return None
 
-    with open(path, 'r') as fp:
+    if 'encoding' not in openflags:
+        openflags['encoding'] = 'UTF-8'
+
+    with open(path, 'r', **openflags) as fp:
         lines = fp.readlines()
         if strip:
             lines = [x.strip() for x in lines]
