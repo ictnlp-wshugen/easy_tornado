@@ -43,12 +43,14 @@ def shell_invoke(command, **kwargs):
         daemon: 是否在主线程退出之后仍然运行
         on_error: 用于处理出现错误时的函数
             接收参数 e subprocess.CalledProcessError
+        ret_buffer: 返回值缓冲, 用于存储如日志等路径信息
     :return: 返回码
     """
     log_prefix = kwargs.pop('log_prefix', None)
     debug = kwargs.pop('debug', True)
     daemon = kwargs.pop('daemon', False)
     on_error = kwargs.pop('on_error', None)
+    ret_buffer = kwargs.pop('ret_buffer', None)
     if on_error is not None and not callable(on_error):
         message = 'on_error must be of callable, but got {}'
         raise TypeError(message.format(type(on_error)))
@@ -64,6 +66,10 @@ def shell_invoke(command, **kwargs):
     stdout, stderr = None, None
     if log_prefix is not None:
         cmd_path, out_path, err_path = _get_log_paths(log_prefix)
+        if ret_buffer is not None and isinstance(ret_buffer, dict):
+            ret_buffer['cmd_path'] = cmd_path
+            ret_buffer['out_path'] = out_path
+            ret_buffer['err_path'] = err_path
         write_file_contents(cmd_path, command)
         stdout = codecs.open(out_path, mode='w', encoding='utf-8')
         if not debug:
