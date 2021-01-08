@@ -9,6 +9,7 @@ from tornado.web import RequestHandler
 from tornado.web import asynchronous
 
 from ..compat import utf8decode
+from ..compat import C_StandardError
 from ..utils.httpclient import json_print
 from ..utils.logging import it_print
 from ..utils.stringext import to_json
@@ -16,6 +17,9 @@ from ..utils.timeext import current_datetime
 
 
 class WebApplicationHandler(RequestHandler):
+    # 全局信息
+    application_map = dict()
+
     # 错误信息
     error_mapper = dict()
 
@@ -133,3 +137,24 @@ class WebApplicationHandler(RequestHandler):
     @staticmethod
     def pretty_it_print(data):
         json_print(data)
+
+    @staticmethod
+    def store(key, value):
+        self = WebApplicationHandler
+        self.application_map[key] = value
+
+    @staticmethod
+    def retrieve(key, default=None):
+        self = WebApplicationHandler
+        if key in self.application_map:
+            return self.application_map[key]
+        return default
+
+    @staticmethod
+    def p(key, params):
+        if key in params:
+            return params[key]
+        raise C_StandardError(
+            'parameter [{}] does not present'.format(key)
+        )
+
