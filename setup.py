@@ -5,17 +5,18 @@
 # date: 2018/8/23 14:29
 import ssl
 
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
 setup(
-    name='easy_tornado',
-    version='0.6.2',
-    description='A tornado based web framework package',
-    author='Wang Shugen',
-    author_email='wsg1107556314@163.com',
-    url='https://artifacts.wshugen.cn/python',
-    packages=find_packages(),
-    install_requires=['tornado==5.1.1', 'decorator', 'six', 'urllib3']
+  name='easy_tornado',
+  version='0.6.3',
+  description='A tornado based web framework package',
+  author='Wang Shugen',
+  author_email='wsg1107556314@163.com',
+  url='https://artifacts.wshugen.cn/python',
+  packages=find_packages(),
+  install_requires=['tornado==5.1.1', 'decorator', 'six', 'urllib3']
 )
