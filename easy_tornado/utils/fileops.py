@@ -125,12 +125,12 @@ def concat_path(base_path, sub_path=None, utf8=False):
 
 
 """
-    拼接路径函数别名
+  拼接路径函数别名
 """
 cp = concat_path
 
 """
-    拼接作为C库的路径参数
+  拼接作为C库的路径参数
 """
 clp = partial(concat_path, utf8=True)
 
@@ -214,12 +214,13 @@ def file_append(path_append_to, path_append_from):
   return True
 
 
-def load_file_contents(path, pieces=True, strip=True, **openflags):
+def load_file_contents(path, pieces=True, strip=True, glue='', **openflags):
   """
   读取文件内容
   :param path: 文件路径
   :param pieces: 是否按行返回
   :param strip: 是否对每行进行strip操作
+  :param glue: 将pieces连接在一起的符号
   :return: 若文件不存在返回None, 若可正确读取则返回按行分割的内容列表
   """
   if not file_exists(path):
@@ -236,7 +237,7 @@ def load_file_contents(path, pieces=True, strip=True, **openflags):
     if pieces:
       return lines
 
-    return ''.join([x for x in lines])
+    return glue.join([x for x in lines])
 
 
 def load_json_contents(path):

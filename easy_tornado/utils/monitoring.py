@@ -10,11 +10,12 @@ from .fileops import load_file_contents
 from .fileops import remove_file
 
 
-def kill_process(pid_path, signum=None):
+def kill_process(pid_path, signum=None, remove=True):
   """
   向pid_path文件内容中的PID发送信号
   :param pid_path: pid文件路径
   :param signum: 信号值
+  :param remove: 是否移除pid文件
   """
   if not file_exists(pid_path):
     return None
@@ -30,7 +31,10 @@ def kill_process(pid_path, signum=None):
     kill(pid, signum)
   except OSError as e:
     if len(e.args) != 2 or e.args[1] != 'No such process':
-      raise
+      return None
 
   # 移除PID文件
-  remove_file(pid_path)
+  if remove:
+    remove_file(pid_path)
+
+  return True
