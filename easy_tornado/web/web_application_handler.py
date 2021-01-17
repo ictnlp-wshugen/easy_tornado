@@ -125,7 +125,7 @@ class WebApplicationHandler(RequestHandler):
     if self.debug:
       data['response_time'] = current_datetime()
       self.pretty_it_print(data)
-    self.__output_response(to_json(data))
+    self.__output_response(to_json(data, sort_keys=True))
 
   def __output_response(self, data):
     self.write(data)
