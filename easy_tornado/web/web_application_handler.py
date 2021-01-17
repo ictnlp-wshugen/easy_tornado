@@ -67,7 +67,7 @@ class WebApplicationHandler(RequestHandler):
     self.daemon = kwargs.pop('daemon', self.daemon)
 
   @staticmethod
-  def persist():
+  def persist(**kwargs):
     pass
 
   @staticmethod

@@ -33,10 +33,11 @@ def build_url(host, port, context, uri, schema='http'):
   return '{}://{}:{}{}{}'.format(schema, host, port, context, uri)
 
 
-def request(request_url, data=None, as_json=True, timeout=None):
+def request(request_url, headers=None, data=None, as_json=True, timeout=None):
   """
   发送HTTP请求
   :param request_url: 请求url
+  :param headers: 头部
   :param data: 请求数据
   :param as_json: 是否以json格式发送数据
   :param timeout: 超时时间
@@ -46,6 +47,11 @@ def request(request_url, data=None, as_json=True, timeout=None):
   if timeout is not None:
     kwargs['timeout'] = timeout
 
+  _headers = dict()
+  if headers is not None:
+    assert isinstance(headers, dict)
+    _headers.update(headers)
+
   result = None
   if six.PY2:
     from urllib2 import Request
@@ -53,7 +59,7 @@ def request(request_url, data=None, as_json=True, timeout=None):
     from urllib2 import HTTPCookieProcessor
     from urllib2 import URLError
 
-    req = Request(request_url)
+    req = Request(request_url, headers=_headers)
     opener = build_opener(HTTPCookieProcessor())
     if data is not None:
       if as_json:
@@ -84,7 +90,9 @@ def request(request_url, data=None, as_json=True, timeout=None):
       else:
         kwargs['fields'] = data
     try:
-      response = http.request('POST', request_url, **kwargs)
+      response = http.request(
+        'POST', request_url, headers=_headers, **kwargs
+      )
       result = response.data
     except RequestError as e:
       if isinstance(e, MaxRetryError) \
