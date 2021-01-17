@@ -4,7 +4,6 @@
 # date: 2018年8月23日 14:26:49
 import json
 
-from tornado import stack_context
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httpclient import HTTPError
 from tornado.httpclient import HTTPRequest
@@ -116,7 +115,7 @@ class WebApplicationHandler(RequestHandler):
         response = HTTPResponse(HTTPRequest(url=url), 599, error=exc)
       else:
         response = _future.result()
-      client.io_loop.add_callback(stack_context.wrap(callback), response)
+      client.io_loop.add_callback(callback, response)
 
     future.add_done_callback(handle_future)
 
