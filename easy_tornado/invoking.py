@@ -7,8 +7,7 @@ import subprocess
 import warnings
 
 from .compat import python2
-from .utils import current_datetime_str_s
-from .utils import file_exists
+from .utils import current_datetime_str_d
 from .utils import write_file_contents
 
 NOHUP = 'nohup'
@@ -16,13 +15,10 @@ BG_MARK = '&'
 
 
 def _get_log_paths(log_prefix):
-  time_suffix = current_datetime_str_s()
+  time_suffix = current_datetime_str_d()
 
   def refine_path(prefix, suffix):
-    log_path = '{}.{}'.format(prefix, suffix)
-    if file_exists(log_path):
-      log_path = '{}.{}'.format(log_path, time_suffix)
-    return log_path
+    return '{}-{}.{}'.format(prefix, time_suffix, suffix)
 
   cmd_path = refine_path(log_prefix, 'cmd')
   out_path = refine_path(log_prefix, 'out')
@@ -44,6 +40,7 @@ def shell_invoke(command, **kwargs):
       on_error: 用于处理出现错误时的函数
           接收参数 e subprocess.CalledProcessError
       ret_buffer: 返回值缓冲, 用于存储如日志等路径信息
+      build_log_paths_fn: 构建日志路径函数, 接受日志前缀，返回cmd_path, out_path, err_path
   :return: 返回码
   """
   log_prefix = kwargs.pop('log_prefix', None)
@@ -65,7 +62,8 @@ def shell_invoke(command, **kwargs):
 
   stdout, stderr = None, None
   if log_prefix is not None:
-    cmd_path, out_path, err_path = _get_log_paths(log_prefix)
+    build_log_paths_fn = kwargs.pop('build_log_paths_fn', _get_log_paths)
+    cmd_path, out_path, err_path = build_log_paths_fn(log_prefix)
     if ret_buffer is not None and isinstance(ret_buffer, dict):
       ret_buffer['cmd_path'] = cmd_path
       ret_buffer['out_path'] = out_path

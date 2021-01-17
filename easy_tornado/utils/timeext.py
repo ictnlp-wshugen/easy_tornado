@@ -44,6 +44,15 @@ def current_datetime_str_s(timestamp=None):
   return time.strftime("%Y%m%dT%H%M%S", time.localtime(timestamp))
 
 
+def current_datetime_str_d(timestamp=None):
+  """
+  获取当前时间戳对应的以T作为分割的日期、时间字符串
+  :param timestamp: 时间戳
+  :return: 日期时间字符串 形如 2018.11.19-10.20.35
+  """
+  return time.strftime("%Y.%m.%d-%H.%M.%S", time.localtime(timestamp))
+
+
 class Timer(object):
   """
   计时器类

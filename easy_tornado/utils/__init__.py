@@ -49,6 +49,7 @@ from .timeext import Timer
 from .timeext import current_datetime
 from .timeext import current_datetime_str
 from .timeext import current_datetime_str
+from .timeext import current_datetime_str_d
 from .timeext import current_datetime_str_s
 from .timeext import current_timestamp
 from .timeext import timed
