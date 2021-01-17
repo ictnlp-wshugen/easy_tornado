@@ -4,7 +4,11 @@
 # date: 2018年8月23日 14:26:49
 import json
 
+from tornado import stack_context
 from tornado.httpclient import AsyncHTTPClient
+from tornado.httpclient import HTTPError
+from tornado.httpclient import HTTPRequest
+from tornado.httpclient import HTTPResponse
 from tornado.web import RequestHandler
 
 from ..compat import C_StandardError
@@ -100,13 +104,21 @@ class WebApplicationHandler(RequestHandler):
 
     json_data = to_json(_data)
     client = AsyncHTTPClient()
-    client.fetch(
-      url,
-      body=json_data,
-      callback=callback,
-      method=method,
-      request_timeout=timeout
+    future = client.fetch(
+      url, body=json_data, method=method, request_timeout=timeout
     )
+
+    def handle_future(_future):
+      exc = future.exception()
+      if isinstance(exc, HTTPError) and exc.response is not None:
+        response = exc.response
+      elif exc is not None:
+        response = HTTPResponse(HTTPRequest(url=url), 599, error=exc)
+      else:
+        response = _future.result()
+      client.io_loop.add_callback(stack_context.wrap(callback), response)
+
+    future.add_done_callback(handle_future)
 
   def success_response(self, data=None):
     self.error_response(self.none, self.error_mapper[self.none], data)
