@@ -6,9 +6,9 @@ import json
 
 from tornado.httpclient import AsyncHTTPClient
 from tornado.web import RequestHandler
-from tornado.web import asynchronous
 
 from ..compat import C_StandardError
+from ..compat import asynchronous
 from ..compat import utf8decode
 from ..utils.httpclient import json_print
 from ..utils.logging import it_print
@@ -67,6 +67,11 @@ class WebApplicationHandler(RequestHandler):
   def persist():
     pass
 
+  @staticmethod
+  def restore(**kwargs):
+    self = WebApplicationHandler
+    self.global_map.update(kwargs)
+
   # 加载为json数据
   def load_request_data(self):
     try:
@@ -106,9 +111,10 @@ class WebApplicationHandler(RequestHandler):
 
   def error_response(self, error_no=invalid_request,
                      error_desc=None, data=None):
-    res = data
-    if not data:
-      res = dict()
+    res = dict()
+    if data is not None:
+      assert isinstance(data, dict)
+      res.update(data)
     res['errno'] = error_no
     if error_desc is None:
       error_desc = self.error_mapper[error_no]

@@ -12,11 +12,11 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 setup(
   name='easy_tornado',
-  version='0.6.3',
+  version='0.6.4',
   description='A tornado based web framework package',
   author='Wang Shugen',
   author_email='wsg1107556314@163.com',
   url='https://artifacts.wshugen.cn/python',
   packages=find_packages(),
-  install_requires=['tornado==5.1.1', 'decorator', 'six', 'urllib3']
+  install_requires=['tornado', 'decorator', 'six', 'urllib3']
 )
