@@ -93,10 +93,12 @@ class WebApplicationHandler(RequestHandler):
     if callback is None:
       callback = self.response
 
-    if data is None:
-      data = {}
+    _data = dict()
+    if data is not None:
+      assert isinstance(data, dict)
+      _data.update(data)
 
-    json_data = to_json(data)
+    json_data = to_json(_data)
     client = AsyncHTTPClient()
     client.fetch(
       url,
