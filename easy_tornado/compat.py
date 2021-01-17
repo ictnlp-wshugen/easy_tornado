@@ -5,7 +5,6 @@
 import sys
 
 import six
-import tornado
 
 from .functional import deprecated
 
@@ -24,13 +23,6 @@ if python2:
 if python3:
   C_StandardError = BaseException
   C_MAXINT = sys.maxsize
-
-if tornado.version >= '6.0':
-  from tornado.gen import coroutine as asynchronous
-else:
-  from tornado.web import asynchronous
-
-asynchronous = asynchronous
 
 
 def cse_message(e):

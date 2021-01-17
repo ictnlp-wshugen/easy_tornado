@@ -3,6 +3,7 @@
 # email: wangshugen@ict.ac.cn
 # date: 2018年8月23日 14:26:49
 import json
+import time
 
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httpclient import HTTPError
@@ -11,7 +12,6 @@ from tornado.httpclient import HTTPResponse
 from tornado.web import RequestHandler
 
 from ..compat import C_StandardError
-from ..compat import asynchronous
 from ..compat import utf8decode
 from ..utils.httpclient import json_print
 from ..utils.logging import it_print
@@ -89,12 +89,15 @@ class WebApplicationHandler(RequestHandler):
       return False
     return params
 
-  # 转发请求
-  @asynchronous
-  def forward(self, url, data=None, callback=None,
-              method='POST', timeout=3600):
+  # 异步转发请求
+  @staticmethod
+  def async_forward(url, data=None, callback=None,
+                    method='POST', timeout=3600):
     if callback is None:
-      callback = self.response
+      def empty_fn(_):
+        pass
+
+      callback = empty_fn
 
     _data = dict()
     if data is not None:
@@ -112,12 +115,33 @@ class WebApplicationHandler(RequestHandler):
       if isinstance(exc, HTTPError) and exc.response is not None:
         response = exc.response
       elif exc is not None:
-        response = HTTPResponse(HTTPRequest(url=url), 599, error=exc)
+        request = HTTPRequest(url)
+        response = HTTPResponse(
+          request, 599, error=exc,
+          request_time=time.time() - request.start_time)
       else:
         response = _future.result()
       client.io_loop.add_callback(callback, response)
 
     future.add_done_callback(handle_future)
+
+  # 同步转发请求
+  async def forward(self, url, data=None, callback=None,
+                    method='POST', timeout=3600):
+    if callback is None:
+      callback = self.response
+
+    _data = dict()
+    if data is not None:
+      assert isinstance(data, dict)
+      _data.update(data)
+
+    json_data = to_json(_data)
+    client = AsyncHTTPClient()
+    response = await client.fetch(
+      url, body=json_data, method=method, request_timeout=timeout
+    )
+    return callback(response)
 
   def success_response(self, data=None):
     self.error_response(self.none, self.error_mapper[self.none], data)
