@@ -2,3 +2,4 @@ tornado==5.1.1
 decorator
 six
 urllib3
+psutil==5.8.0

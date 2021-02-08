@@ -78,6 +78,8 @@ class WebApplicationHandler(RequestHandler):
   # 加载为json数据
   def load_request_data(self):
     try:
+      if self.debug:
+        it_print(self.request.body)
       body = utf8decode(self.request.body)
       params = json.loads(body) if body != '' else dict()
       # 加入私有属性作为数据，否则params为空，被if not判断为真
@@ -158,6 +160,12 @@ class WebApplicationHandler(RequestHandler):
     res['error'] = error_desc
     self.__json_response(res)
 
+  def text_response(self, text):
+    self.__output_response(text)
+
+  def json_response(self, data):
+    self.__json_response(data)
+
   def __json_response(self, data):
     if self.debug:
       data['response_time'] = current_datetime()
@@ -208,9 +216,11 @@ class WebApplicationHandler(RequestHandler):
     return default
 
   @staticmethod
-  def p(key, params):
+  def p(key, params, **kwargs):
     if key in params:
       return params[key]
+    if 'default' in kwargs:
+      return kwargs['default']
     raise C_StandardError(
       'parameter [{}] does not present'.format(key)
     )

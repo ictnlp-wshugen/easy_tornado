@@ -291,11 +291,11 @@ def write_json_contents(path, data, newline=False):
 
 def write_iterable_contents(path, iterable_obj, obj2line_func=lambda x: x):
   """
-      将可迭代的数据按行的形式写入文件
-      :param path: 文件路径
-      :param iterable_obj: 可迭代对象
-      :param obj2line_func: 将对象映射为行的函数
-      """
+  将可迭代的数据按行的形式写入文件
+  :param path: 文件路径
+  :param iterable_obj: 可迭代对象
+  :param obj2line_func: 将对象映射为行的函数
+  """
   with open(path, 'w') as wfp:
     for obj in iterable_obj:
       write_line(wfp, obj2line_func(obj))
@@ -316,12 +316,23 @@ def work_dir(path=None):
 def mkdtemp():
   """
   创建临时路径, 并在退出域时删除该路径
-  :return: 临时路径
+  :return 临时路径
   """
   path = tempfile.mkdtemp()
   create_if_not_exists(path)
   yield path
   shutil.rmtree(path)
+
+
+@contextmanager
+def mkstemp():
+  """
+  创建临时文件, 并在退出域时删除该路径
+  :return 临时路径
+  """
+  path = tempfile.mkstemp()
+  yield path[1]
+  remove_file(path[1])
 
 
 @contextmanager

@@ -5,9 +5,13 @@
 import signal
 from os import kill
 
+import psutil
+
+from . import exit_print
 from .fileops import file_exists
 from .fileops import load_file_contents
 from .fileops import remove_file
+from .. import it_print
 
 
 def kill_process(pid_path, signum=None, remove=True):
@@ -38,3 +42,17 @@ def kill_process(pid_path, signum=None, remove=True):
     remove_file(pid_path)
 
   return True
+
+
+def query_process(pid_path):
+  """
+  :param pid_path PID文件路径
+  """
+  if not file_exists(pid_path):
+    exit_print('{} does not exist, please check it manually!'.format(pid_path))
+
+  pid = int(load_file_contents(pid_path, pieces=False))
+  if psutil.pid_exists(pid):
+    it_print("Process is running with PID={} !".format(pid))
+  else:
+    it_print("Process is not running with PID={} !".format(pid))
