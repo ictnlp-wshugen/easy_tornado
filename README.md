@@ -1,4 +1,4 @@
-A common utils and tornado-based easy setup framework
+A common toolkit and tornado-based easy setup framework
 
 #### Features
 - Python2 and Python3 compatibillity
@@ -8,3 +8,6 @@ A common utils and tornado-based easy setup framework
 - String utils
 - Validation utils
 - Unified json web api
+
+#### Notes
+- version 0.6.6 is mistakenly released, do NOT use for safety!
