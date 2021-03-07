@@ -4,6 +4,7 @@
 # date: 2018年8月23日 14:26:49
 import json
 import time
+from functools import partial
 
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httpclient import HTTPError
@@ -144,7 +145,7 @@ class WebApplicationHandler(RequestHandler):
   async def forward(self, url, data=None, callback=None,
                     method='POST', timeout=3600):
     if callback is None:
-      callback = self.response
+      callback = partial(self.response, inplace=True)
 
     _data = dict()
     if data is not None:
@@ -158,8 +159,11 @@ class WebApplicationHandler(RequestHandler):
     )
     return callback(response)
 
-  def success_response(self, data=None):
-    self.error_response(self.none, self.error_mapper[self.none], data)
+  def success_response(self, data=None, inplace=False):
+    if inplace:
+      self.error_response(data.pop('errno'), data.pop('error'), data)
+    else:
+      self.error_response(self.none, self.error_mapper[self.none], data)
 
   def error_response(self, error_no=invalid_request,
                      error_desc=None, data=None):
@@ -190,14 +194,14 @@ class WebApplicationHandler(RequestHandler):
     self.finish()
 
   # 默认响应处理器
-  def response(self, response):
+  def response(self, response, inplace=False):
     try:
       if self.debug:
         it_print(response.body)
       result = json.loads(response.body)
     except ValueError:
       return self.error_response(error_no=self.system_error)
-    return self.success_response(result)
+    return self.success_response(result, inplace=inplace)
 
   def data_received(self, chunk):
     pass
