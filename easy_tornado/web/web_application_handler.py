@@ -155,7 +155,8 @@ class WebApplicationHandler(RequestHandler):
     json_data = to_json(_data)
     client = AsyncHTTPClient()
     response = await client.fetch(
-      url, body=json_data, method=method, request_timeout=timeout
+      url, body=json_data, method=method,
+      request_timeout=timeout, connect_timeout=timeout
     )
     return callback(response)
 
