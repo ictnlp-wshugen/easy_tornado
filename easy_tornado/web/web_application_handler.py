@@ -91,6 +91,19 @@ class WebApplicationHandler(RequestHandler):
       return False
     return params
 
+  # 加载query数据
+  def load_query_data(self):
+    try:
+      if self.debug:
+        it_print(self.request.query)
+      params = {
+        k: [utf8decode(x) for x in v]
+        for k, v in self.request.query_arguments.items()
+      }
+    except ValueError:
+      return False
+    return params
+
   # 异步转发请求
   @staticmethod
   def async_forward(url, data=None, callback=None,
@@ -224,3 +237,19 @@ class WebApplicationHandler(RequestHandler):
     raise C_StandardError(
       'parameter [{}] does not present'.format(key)
     )
+
+  def q(self, key, params=None, multiple=False, type_fn=str, **kwargs):
+    if params is None:
+      params = self.load_query_data()
+
+    if key not in params:
+      if 'default' in kwargs:
+        return kwargs['default']
+      return C_StandardError(
+        'query parameter [{}] does not present'.format(key)
+      )
+
+    values = params[key]
+    if multiple:
+      return [type_fn(x) for x in values]
+    return type_fn(values[0])
