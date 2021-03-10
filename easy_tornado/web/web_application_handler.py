@@ -51,6 +51,10 @@ class WebApplicationHandler(RequestHandler):
   internal_server = 5003
   error_mapper[internal_server] = 'internal server'
 
+  # 请求超时
+  request_timeout = 5005
+  error_mapper[request_timeout] = 'request timeout'
+
   # 调试模式
   debug = False
 
@@ -59,6 +63,14 @@ class WebApplicationHandler(RequestHandler):
 
   # 作为后台进程运行
   daemon = True
+
+  default_key = 'default'
+
+  data_key = 'data'
+
+  r_data_key = 'r_data'
+
+  q_data_key = 'q_data'
 
   @staticmethod
   def setup_config(**kwargs):
@@ -233,28 +245,62 @@ class WebApplicationHandler(RequestHandler):
       return self.global_map[key]
     return default
 
-  @staticmethod
-  def p(key, params, **kwargs):
-    if key in params:
-      return params[key]
-    if 'default' in kwargs:
-      return kwargs['default']
+  def p(self, key, data=None, **kwargs):
+    if key in data:
+      return data[key]
+
+    if self.default_key in kwargs:
+      return kwargs[self.default_key]
+
     raise C_StandardError(
-      'parameter [{}] does not present'.format(key)
+      'request parameter [{}] does not present'.format(key)
     )
 
-  def q(self, key, params=None, multiple=False, type_fn=str, **kwargs):
-    if params is None:
-      params = self.load_query_data()
+  def q(self, key, data=None, multiple=False, type_fn=str, **kwargs):
+    if data is None:
+      data = self.load_query_data()
 
-    if key not in params:
-      if 'default' in kwargs:
-        return kwargs['default']
+    if key not in data:
+      if self.default_key in kwargs:
+        return kwargs[self.default_key]
+
       return C_StandardError(
         'query parameter [{}] does not present'.format(key)
       )
 
-    values = params[key]
+    values = data[key]
     if multiple:
       return [type_fn(x) for x in values]
     return type_fn(values[0])
+
+  def v(self, key, **kwargs):
+    if self.data_key in kwargs:
+      data = kwargs[self.data_key]
+      if key in data:
+        return data[key]
+
+    if self.q_data_key in kwargs:
+      data = kwargs[self.q_data_key]
+    else:
+      data = self.load_query_data()
+    if key in data:
+      values = data[key]
+      multiple = kwargs.pop('multiple', False)
+      type_fn = kwargs.pop('type_fn', str)
+      if multiple:
+        return [type_fn(x) for x in values]
+      return type_fn(values[0])
+
+    if self.r_data_key in kwargs:
+      data = kwargs[self.r_data_key]
+    else:
+      data = self.load_request_data()
+    if key in data:
+      return data[key]
+
+    if self.default_key in kwargs:
+      return kwargs[self.default_key]
+
+    raise C_StandardError(
+      'parameter [{}] does not present'.format(key)
+    )
