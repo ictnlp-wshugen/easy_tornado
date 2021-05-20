@@ -4,6 +4,7 @@
 # date: 2018/11/19 11:28
 from __future__ import division
 
+import datetime
 import time
 
 from .logging import it_print
@@ -51,6 +52,21 @@ def current_datetime_str_d(timestamp=None):
   :return: 日期时间字符串 形如 2018.11.19-10.20.35
   """
   return time.strftime("%Y.%m.%d-%H.%M.%S", time.localtime(timestamp))
+
+
+def current_datetime_r():
+  return datetime.datetime.now()
+
+
+def current_datetime_r_str(datetime_r=None):
+  """
+  获取当前时间戳对应的以T作为分割的日期、时间字符串
+  :param datetime_r: datetime.datetime对象
+  :return: 日期时间字符串 形如 2021.05.20-11.03.21-082161
+  """
+  if datetime_r is None or not isinstance(datetime_r, datetime.datetime):
+    datetime_r = current_datetime_r()
+  return datetime_r.strftime("%Y.%m.%d-%H.%M.%S-%f")
 
 
 class Timer(object):

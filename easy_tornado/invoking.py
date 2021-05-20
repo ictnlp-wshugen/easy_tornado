@@ -7,7 +7,7 @@ import subprocess
 import warnings
 
 from .compat import python2
-from .utils import current_datetime_str_d
+from .utils import current_datetime_r_str
 from .utils import write_file_contents
 
 NOHUP = 'nohup'
@@ -15,7 +15,7 @@ BG_MARK = '&'
 
 
 def _get_log_paths(log_prefix):
-  time_suffix = current_datetime_str_d()
+  time_suffix = current_datetime_r_str()
 
   def refine_path(prefix, suffix):
     return '{}-{}.{}'.format(prefix, time_suffix, suffix)

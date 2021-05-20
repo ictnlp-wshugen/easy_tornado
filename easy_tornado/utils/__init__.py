@@ -47,6 +47,8 @@ from .stringext import parse_json
 from .stringext import to_json
 from .timeext import Timer
 from .timeext import current_datetime
+from .timeext import current_datetime_r
+from .timeext import current_datetime_r_str
 from .timeext import current_datetime_str
 from .timeext import current_datetime_str
 from .timeext import current_datetime_str_d

@@ -178,16 +178,17 @@ class WebApplicationHandler(RequestHandler):
     else:
       self.error_response(self.none, self.error_mapper[self.none], data)
 
-  def error_response(self, error_no=invalid_request,
-                     error_desc=None, data=None):
+  def error_response(self, errno=invalid_request, error=None, data=None):
     res = dict()
     if data is not None:
       assert isinstance(data, dict)
       res.update(data)
-    res['errno'] = error_no
-    if error_desc is None:
-      error_desc = self.error_mapper[error_no]
-    res['error'] = error_desc
+
+    res['errno'] = errno
+    if error is None:
+      error = self.error_mapper[errno]
+    res['error'] = error
+
     self.__json_response(res)
 
   def text_response(self, text):
@@ -213,7 +214,7 @@ class WebApplicationHandler(RequestHandler):
         it_print(response.body)
       result = json.loads(response.body)
     except ValueError:
-      return self.error_response(error_no=self.system_error)
+      return self.error_response(errno=self.system_error)
     return self.success_response(result, inplace=inplace)
 
   def data_received(self, chunk):
