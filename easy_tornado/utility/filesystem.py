@@ -12,7 +12,7 @@ from functools import partial
 
 from decorator import contextmanager
 
-from .collext import Iterable
+from .collection import Iterable
 from .stringext import from_json
 from .stringext import to_json
 from ..compat import utf8encode
@@ -359,33 +359,3 @@ def open_files(*paths, **kwargs):
 
   for handle in handles:
     handle.close()
-
-
-@deprecated(new_fn=file_append)
-def append_to_file(path_append_to, path_append_from):
-  return file_append(path_append_to, path_append_from)
-
-
-@deprecated(new_fn=create_if_not_exists)
-def create_if_not_exist_path(file_path):
-  create_if_not_exists(file_path)
-
-
-@deprecated(new_fn=concat_path)
-def format_path(base_path, sub_path):
-  return concat_path(base_path, sub_path)
-
-
-@deprecated(new_fn=file_size)
-def get_file_size(path):
-  return file_size(path)
-
-
-@deprecated(new_fn=file_lines)
-def get_file_lines(path):
-  return file_lines(path)
-
-
-@deprecated(new_fn=write_iterable_contents)
-def write_iterable_as_lines(*args, **kwargs):
-  write_iterable_contents(*args, **kwargs)

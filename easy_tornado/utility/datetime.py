@@ -7,7 +7,7 @@ from __future__ import division
 import datetime
 import time
 
-from .logging import it_print
+from .printext import it_print
 
 
 def current_timestamp():

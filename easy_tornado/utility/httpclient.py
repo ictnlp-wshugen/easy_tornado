@@ -4,10 +4,10 @@
 # date: 2018/11/19 11:25
 from __future__ import print_function
 
-from .logging import it_print
+from .printext import it_print
 from .stringext import parse_json
 from .stringext import to_json
-from .timeext import Timer
+from .datetime import Timer
 from .webext import request
 from ..functional import deprecated
 
@@ -115,8 +115,3 @@ class HttpTest(object):
 
   def request(self, uri, data=None, as_json=True, timeout=None):
     return self.request_url('{}{}'.format(self.url, uri), data, as_json, timeout)
-
-
-@deprecated(new_fn=json_print)
-def print_dict_json(data_dict):
-  json_print(data_dict)

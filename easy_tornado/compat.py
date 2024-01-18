@@ -6,8 +6,6 @@ import sys
 
 import six
 
-from .functional import deprecated
-
 python2 = six.PY2
 python3 = six.PY3
 
@@ -68,7 +66,7 @@ TYPE_FUNCTION = "<{} 'function'>".format(TYPE_NAME)
 TYPE_CLASS = "<{} 'type'>".format(TYPE_NAME)
 
 
-def compatibility_warning(new_module, *functions):
+def compat_warning(new_module, *functions):
   """
   用于无警告移动函数
   :param new_module: 新模块
@@ -112,8 +110,3 @@ def compatibility_warning(new_module, *functions):
   fmts.append('  please upgrade to the newest version.')
 
   warnings.warn(''.join(fmts).format(**kwargs))
-
-
-@deprecated(new_fn=compatibility_warning)
-def happy_move_functions(*args, **kwargs):
-  compatibility_warning(*args, **kwargs)

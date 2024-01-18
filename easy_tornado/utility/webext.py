@@ -7,7 +7,7 @@ import urllib
 import six
 from six.moves import xrange
 
-from .collext import Iterable
+from .collection import Iterable
 from .stringext import to_json
 from ..compat import C_StandardError
 

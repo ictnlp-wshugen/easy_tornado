@@ -7,8 +7,8 @@ import subprocess
 import warnings
 
 from .compat import python2
-from .utils import current_datetime_r_str
-from .utils import write_file_contents
+from .utility import current_datetime_r_str
+from .utility import write_file_contents
 
 NOHUP = 'nohup'
 BG_MARK = '&'

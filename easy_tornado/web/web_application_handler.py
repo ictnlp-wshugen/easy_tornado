@@ -2,10 +2,13 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018年8月23日 14:26:49
+import asyncio
 import json
 import time
+from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 
+from tornado.concurrent import run_on_executor
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httpclient import HTTPError
 from tornado.httpclient import HTTPRequest
@@ -14,10 +17,10 @@ from tornado.web import RequestHandler
 
 from ..compat import C_StandardError
 from ..compat import utf8decode
-from ..utils.httpclient import json_print
-from ..utils.logging import it_print
-from ..utils.stringext import to_json
-from ..utils.timeext import current_datetime
+from ..utility.httpclient import json_print
+from ..utility.printext import it_print
+from ..utility.stringext import to_json
+from ..utility.datetime import current_datetime
 
 
 class WebApplicationHandler(RequestHandler):
@@ -72,12 +75,22 @@ class WebApplicationHandler(RequestHandler):
 
   q_data_key = 'q_data'
 
+  # 线程池执行器
+  executor = None
+
   @staticmethod
   def setup_config(**kwargs):
-    self = WebApplicationHandler
-    self.debug = kwargs.pop('debug', self.debug)
-    self.devel = kwargs.pop('devel', self.devel)
-    self.daemon = kwargs.pop('daemon', self.daemon)
+    cls = WebApplicationHandler
+    cls.debug = kwargs.pop('debug', cls.debug)
+    cls.devel = kwargs.pop('devel', cls.devel)
+    cls.daemon = kwargs.pop('daemon', cls.daemon)
+    cls.executor = kwargs.pop('executor', ThreadPoolExecutor(1))
+
+  @run_on_executor
+  def apply_async(self, invoker):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    invoker()
 
   @staticmethod
   def persist(**kwargs):
@@ -85,8 +98,8 @@ class WebApplicationHandler(RequestHandler):
 
   @staticmethod
   def restore(**kwargs):
-    self = WebApplicationHandler
-    self.global_map.update(kwargs)
+    cls = WebApplicationHandler
+    cls.global_map.update(kwargs)
 
   # 加载为json数据
   def load_request_data(self):

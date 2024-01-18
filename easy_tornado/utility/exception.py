@@ -2,9 +2,8 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/19 11:03
-from .logging import it_print
+from .printext import it_print
 from ..compat import C_StandardError
-from ..functional import deprecated
 
 
 class InternalError(C_StandardError):
@@ -41,15 +40,3 @@ def _do_print(*args, **kwargs):
 
   print_fn = kwargs.pop('print_fn', it_print)
   print_fn(*args, **kwargs)
-
-
-@deprecated(new_fn=exit_print)
-def error_exit(errno=0, error=None):
-  """
-  print message and exit
-  :param errno: error code
-  :param error: error message
-  """
-  if error is not None:
-    it_print(error)
-  exit(errno)

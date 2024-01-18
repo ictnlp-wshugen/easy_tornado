@@ -4,7 +4,7 @@
 # date: 2018/11/19 11:30
 from six.moves import xrange
 
-from .collext import Iterable
+from .collection import Iterable
 
 
 def contain_keys(data, *keys):

@@ -2,7 +2,7 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/19 11:01
-from collections import Iterable
+from typing import Iterable
 
 
 def unique_list(items):

@@ -8,10 +8,10 @@ from os import kill
 import psutil
 
 from . import exit_print
-from .fileops import file_exists
-from .fileops import load_file_contents
-from .fileops import remove_file
-from .logging import it_print
+from .filesystem import file_exists
+from .filesystem import load_file_contents
+from .filesystem import remove_file
+from .printext import it_print
 
 
 def kill_process(pid_path, signum=None, remove=True):
