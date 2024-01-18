@@ -8,6 +8,7 @@ import datetime
 import time
 
 from .printext import it_print
+from ..functional import deprecated
 
 
 def current_timestamp():
@@ -16,6 +17,14 @@ def current_timestamp():
   :return: 时间戳
   """
   return time.time()
+
+
+def current_datetime_r():
+  """
+  获取当前datetime
+  :return: 时间戳
+  """
+  return datetime.datetime.now()
 
 
 def current_datetime(timestamp=None):
@@ -38,7 +47,7 @@ def current_datetime_str(timestamp=None):
 
 def current_datetime_str_s(timestamp=None):
   """
-  获取当前时间戳对应的以T作为分割的日期、时间字符串
+  获取当前时间戳对应的以T连接的日期、时间字符串
   :param timestamp: 时间戳
   :return: 日期时间字符串 形如 20181119T102035
   """
@@ -47,26 +56,74 @@ def current_datetime_str_s(timestamp=None):
 
 def current_datetime_str_d(timestamp=None):
   """
-  获取当前时间戳对应的以T作为分割的日期、时间字符串
+  获取当前时间戳对应的以-连接的日期、时间字符串, 日期时间内容通过.连接
   :param timestamp: 时间戳
   :return: 日期时间字符串 形如 2018.11.19-10.20.35
   """
   return time.strftime("%Y.%m.%d-%H.%M.%S", time.localtime(timestamp))
 
 
-def current_datetime_r():
-  return datetime.datetime.now()
-
-
-def current_datetime_r_str(datetime_r=None):
+def current_datetime_str_r(datetime_r=None):
   """
   获取当前时间戳对应的以T作为分割的日期、时间字符串
   :param datetime_r: datetime.datetime对象
-  :return: 日期时间字符串 形如 2021.05.20-11.03.21-082161
+  :return: 日期时间微秒字符串 形如 2021.05.20-11.03.21-082161
   """
   if datetime_r is None or not isinstance(datetime_r, datetime.datetime):
     datetime_r = current_datetime_r()
   return datetime_r.strftime("%Y.%m.%d-%H.%M.%S-%f")
+
+
+@deprecated(new_fn=current_datetime_str_r, version='0.8.0')
+def current_datetime_r_str(datetime_r=None):
+  return current_datetime_str_r(datetime_r)
+
+
+def current_date(timestamp=None):
+  """
+  获取当前日期
+  :param timestamp: 时间戳
+  :return: 日期时间格式字符串 形如 2018-11-19
+  """
+  return time.strftime("%Y-%m-%d", time.localtime(timestamp))
+
+
+def current_date_str(timestamp=None):
+  """
+  获取当前日期
+  :param timestamp: 时间戳
+  :return: 日期时间格式字符串 形如 20181119
+  """
+  return time.strftime("%Y%m%d", time.localtime(timestamp))
+
+
+def current_time(timestamp=None):
+  """
+  获取当前时间
+  :param timestamp: 时间戳
+  :return: 日期时间格式字符串 形如 10:20:35
+  """
+  return time.strftime("%H:%M:%S", time.localtime(timestamp))
+
+
+def current_time_str(timestamp=None):
+  """
+  获取当前时间
+  :param timestamp: 时间戳
+  :return: 日期时间格式字符串 形如 10:20:35
+  """
+  return time.strftime("%H%M%S", time.localtime(timestamp))
+
+
+def current_time_str_m(datetime_r=None):
+  """
+  获取当前时间
+  :param datetime_r: datetime.datetime对象
+  :return: 时间/微秒格式字符串 形如 10.20.35-987
+  """
+  if datetime_r is None or not isinstance(datetime_r, datetime.datetime):
+    datetime_r = current_datetime_r()
+  return datetime_r.strftime("%H.%M.%S-%f")
 
 
 class Timer(object):

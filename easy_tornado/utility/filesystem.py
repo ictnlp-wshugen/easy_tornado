@@ -2,6 +2,7 @@
 # author: 王树根
 # email: wangshugen@ict.ac.cn
 # date: 2018/11/19 11:07
+import codecs
 import hashlib
 import io
 import os
@@ -16,7 +17,6 @@ from .collection import Iterable
 from .stringext import from_json
 from .stringext import to_json
 from ..compat import utf8encode
-from ..functional import deprecated
 
 
 def abspath(file_obj):
@@ -214,7 +214,7 @@ def file_append(path_append_to, path_append_from):
   return True
 
 
-def load_file_contents(path, pieces=True, strip=True, glue='', **openflags):
+def load_file_contents(path, pieces=True, strip=True, glue='', **kwargs):
   """
   读取文件内容
   :param path: 文件路径
@@ -226,10 +226,10 @@ def load_file_contents(path, pieces=True, strip=True, glue='', **openflags):
   if not file_exists(path):
     return None
 
-  if 'encoding' not in openflags:
-    openflags['encoding'] = 'UTF-8'
+  if 'encoding' not in kwargs:
+    kwargs['encoding'] = 'UTF-8'
 
-  with open(path, 'r', **openflags) as fp:
+  with codecs.open(path, 'r', **kwargs) as fp:
     lines = fp.readlines()
     if strip:
       lines = [x.strip() for x in lines]
@@ -241,8 +241,7 @@ def load_file_contents(path, pieces=True, strip=True, glue='', **openflags):
 
 
 def load_json_contents(path):
-  contents = load_file_contents(path, pieces=False, strip=True)
-  return from_json(contents)
+  return from_json(load_file_contents(path, pieces=False, strip=True))
 
 
 def write_line(wfp, line):
@@ -256,23 +255,27 @@ def write_line(wfp, line):
     wfp.write('\n')
 
 
-def write_pid(path):
+def write_pid(path, **kwargs):
   """
   将pid写入到路径所在文件
   :param path: 路径
   """
-  with open(path, 'w') as fp:
-    fp.write(str(os.getpid()))
+  if 'encoding' not in kwargs:
+    kwargs['encoding'] = 'UTF-8'
+  with codecs.open(path, 'w', **kwargs) as wfp:
+    wfp.write(str(os.getpid()))
 
 
-def write_file_contents(path, contents, newline=False):
+def write_file_contents(path, contents, newline=False, **kwargs):
   """
   写入内容至文件
   :param path: 文件路径
   :param contents: 待写入内容
   :param newline: 是否追加新行
   """
-  with open(path, 'w') as wfp:
+  if 'encoding' not in kwargs:
+    kwargs['encoding'] = 'UTF-8'
+  with codecs.open(path, 'w', **kwargs) as wfp:
     wfp.write(contents)
     if newline:
       wfp.write('\n')
