@@ -41,7 +41,7 @@ Whether enable message out or not
 _enable = True
 
 
-def it_print(message='', indent=None, device=1, newline=True, json_fmt=False):
+def it_print(message='', indent=None, device=1, newline=True, json_fmt=False, **kwargs):
   """
   in time print: print one line to console immediately
 

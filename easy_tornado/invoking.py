@@ -7,7 +7,7 @@ import subprocess
 import warnings
 
 from .compat import python2
-from .utility import current_datetime_r_str
+from .utility import current_datetime_str_r
 from .utility import write_file_contents
 
 NOHUP = 'nohup'
@@ -15,7 +15,7 @@ BG_MARK = '&'
 
 
 def _get_log_paths(log_prefix):
-  time_suffix = current_datetime_r_str()
+  time_suffix = current_datetime_str_r()
 
   def refine_path(prefix, suffix):
     return '{}-{}.{}'.format(prefix, time_suffix, suffix)
@@ -86,6 +86,7 @@ def shell_invoke(command, **kwargs):
     if on_error:
       on_error(e)
     else:
+      ret_buffer['errno'] = e.errno
       raise
 
 
