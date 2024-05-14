@@ -86,7 +86,8 @@ def shell_invoke(command, **kwargs):
     if on_error:
       on_error(e)
     else:
-      ret_buffer['errno'] = e.returncode
+      if ret_buffer is not None and isinstance(ret_buffer, dict):
+        ret_buffer['errno'] = e.returncode
       raise
 
 
