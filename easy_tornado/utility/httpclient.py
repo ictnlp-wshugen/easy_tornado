@@ -4,12 +4,11 @@
 # date: 2018/11/19 11:25
 from __future__ import print_function
 
+from .datetime import Timer
 from .printext import it_print
 from .stringext import parse_json
 from .stringext import to_json
-from .datetime import Timer
 from .webext import request
-from ..functional import deprecated
 
 
 def print_indent(message):

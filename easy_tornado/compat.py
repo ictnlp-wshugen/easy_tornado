@@ -17,8 +17,7 @@ if python2:
 
   reload_module(sys)
   sys.setdefaultencoding('utf-8')
-
-if python3:
+elif python3:
   C_StandardError = BaseException
   C_MAXINT = sys.maxsize
 
@@ -52,6 +51,9 @@ def utf8decode(text):
   return text.decode('utf-8')
 
 
+utf8_decode = utf8decode
+
+
 def utf8encode(text):
   """
   将text编码为UTF8
@@ -60,6 +62,8 @@ def utf8encode(text):
   """
   return text.encode('utf-8')
 
+
+utf8_encode = utf8encode
 
 TYPE_NAME = 'type' if python2 else 'class'
 TYPE_FUNCTION = "<{} 'function'>".format(TYPE_NAME)

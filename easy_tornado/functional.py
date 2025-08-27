@@ -88,4 +88,7 @@ def async_call(daemon=False, name=None):
 
 @contextmanager
 def none_context():
+  """
+  空装饰器用于赋值
+  """
   yield

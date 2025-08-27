@@ -57,9 +57,11 @@ from .printext import set_print_enable
 from .runtime import kill_process
 from .stringext import as_json
 from .stringext import from_json
+from .stringext import is_json_map
 from .stringext import md5sum
 from .stringext import parse_json
 from .stringext import to_json
+from .stringext import try_trace_json
 from .validation import contain_keys
 from .validation import in_range
 from .webext import TimeoutError

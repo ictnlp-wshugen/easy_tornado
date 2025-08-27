@@ -34,13 +34,13 @@ def shell_invoke(command, **kwargs):
   :param kwargs: 关键字参数
 
   Args:
-      log_prefix: 日志路径前缀
-      debug: 是否为调试模式
-      daemon: 是否在主线程退出之后仍然运行
-      on_error: 用于处理出现错误时的函数
-          接收参数 e subprocess.CalledProcessError
-      ret_buffer: 返回值缓冲, 用于存储如日志等路径信息
-      build_log_paths_fn: 构建日志路径函数, 接受日志前缀，返回cmd_path, out_path, err_path
+    log_prefix: 日志路径前缀
+    debug: 是否为调试模式
+    daemon: 是否在主线程退出之后仍然运行
+    on_error: 用于处理出现错误时的函数
+        接收参数 e subprocess.CalledProcessError
+    ret_buffer: 返回值缓冲, 用于存储如日志等路径信息
+    build_log_paths_fn: 构建日志路径函数, 接受日志前缀，返回cmd_path, out_path, err_path
   :return: 返回码
   """
   log_prefix = kwargs.pop('log_prefix', None)
@@ -112,12 +112,12 @@ def _python_invoke(command, **kwargs):
   :param kwargs: 关键字参数
 
   Args:
-      version: Python版本号, 默认为3
-      log_prefix: 日志路径前缀
-      debug: 是否为调试模式
-      daemon: 是否在主线程退出之后仍然运行
-      on_error: 错误处理函数
-      interpreter: Python解释器
+    version: Python版本号, 默认为3
+    log_prefix: 日志路径前缀
+    debug: 是否为调试模式
+    daemon: 是否在主线程退出之后仍然运行
+    on_error: 错误处理函数
+    interpreter: Python解释器
   :return: 返回码
   """
   command = command.strip()

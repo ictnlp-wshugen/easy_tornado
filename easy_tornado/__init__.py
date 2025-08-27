@@ -2,6 +2,8 @@ from .compat import C_MAXINT
 from .compat import C_StandardError
 from .compat import compat_warning
 from .compat import cse_message
+from .compat import utf8_decode
+from .compat import utf8_encode
 from .compat import utf8decode
 from .compat import utf8encode
 from .filtering import filter_dict_object
@@ -14,5 +16,7 @@ from .invoking import python2_invoke
 from .invoking import python3_invoke
 from .invoking import python_invoke
 from .invoking import shell_invoke
+from .tookit import get_or_default
+from .tookit import read_from_stdin
 from .utility import it_print
 from .utility import it_prints
