@@ -92,7 +92,6 @@ def _ensure_type(subject):
 
 
 def percent(total, bingo, score_only=False, text_only=False, with_stat=True, **kwargs):
-  assert score_only ^ text_only, 'score_only/text_only are mutually exclusive'
   score = float(bingo) * 100 / total
   _kwargs = {'bingo': bingo, 'total': total, 'score': score}
   if with_stat:
