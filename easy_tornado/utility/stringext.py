@@ -89,3 +89,14 @@ def _ensure_type(subject):
       k: _ensure_type(v) for k, v in iteritems(subject)
     }
   return subject
+
+
+def percent(total, bingo, score_only=False, text_only=False, with_stat=True, **kwargs):
+  assert score_only ^ text_only, 'score_only/text_only are mutually exclusive'
+  score = float(bingo) * 100 / total
+  _kwargs = {'bingo': bingo, 'total': total, 'score': score}
+  if with_stat:
+    text = '{score:.2f}%({bingo}/{total})'.format(**_kwargs)
+  else:
+    text = '{score:.2f}%'.format(**_kwargs)
+  return score if score_only else text if text_only else (score, text)
