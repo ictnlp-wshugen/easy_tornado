@@ -244,6 +244,34 @@ def load_json_contents(path):
   return from_json(load_file_contents(path, pieces=False, strip=True))
 
 
+def _load_with_jsonlines(path, fn=None):
+  if not file_exists(path):
+    return None
+  with jsonlines.open(path, 'r', encoding='utf-8') as dfp:
+    if fn is None:
+      return [x for x in dfp]
+    else:
+      return [fn(x) for x in dfp]
+
+
+def load_data_jsonlines(path):
+  """
+  读取文件数据(每行按json读取)
+  :param path: 文件路径
+  :return: 若文件不存在返回None, 若可正确读取则返回json对象列表
+  """
+  return _load_with_jsonlines(path)
+
+
+def load_file_jsonlines(path):
+  """
+  读取文件内容(每行按json读取)
+  :param path: 文件路径
+  :return: 若文件不存在返回None, 若可正确读取则返回按json行分割的内容列表
+  """
+  return _load_with_jsonlines(path, fn=to_json)
+
+
 def write_line(wfp, line):
   """
   向文件中写入一行

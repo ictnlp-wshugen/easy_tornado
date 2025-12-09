@@ -3,3 +3,4 @@ decorator
 six
 urllib3
 psutil
+jsonlines
