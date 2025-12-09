@@ -11,6 +11,7 @@ import subprocess
 import tempfile
 from functools import partial
 
+import jsonlines
 from decorator import contextmanager
 
 from .collection import Iterable
