@@ -248,7 +248,7 @@ def load_json_contents(path):
 def _load_with_jsonlines(path, fn=None):
   if not file_exists(path):
     return None
-  with jsonlines.open(path, 'r', encoding='utf-8') as dfp:
+  with jsonlines.open(path, 'r') as dfp:
     if fn is None:
       return [x for x in dfp]
     else:
