@@ -215,12 +215,13 @@ def file_append(path_append_to, path_append_from):
   return True
 
 
-def load_file_contents(path, pieces=True, strip=True, glue='', **kwargs):
+def load_file_contents(path, pieces=True, strip=True, fn=None, glue='', **kwargs):
   """
   读取文件内容
   :param path: 文件路径
   :param pieces: 是否按行返回
   :param strip: 是否对每行进行strip操作
+  :param fn: 行处理函数
   :param glue: 将pieces连接在一起的符号
   :return: 若文件不存在返回None, 若可正确读取则返回按行分割的内容列表
   """
@@ -231,9 +232,15 @@ def load_file_contents(path, pieces=True, strip=True, glue='', **kwargs):
     kwargs['encoding'] = 'UTF-8'
 
   with codecs.open(path, 'r', **kwargs) as fp:
-    lines = fp.readlines()
-    if strip:
-      lines = [x.strip() for x in lines]
+    lines = []
+    for line in fp:
+      if strip:
+        line = line.strip()
+
+      if fn is not None:
+        line = fn(line)
+
+      lines.append(line)
 
     if pieces:
       return lines
@@ -245,7 +252,13 @@ def load_json_contents(path):
   return from_json(load_file_contents(path, pieces=False, strip=True))
 
 
-def _load_with_jsonlines(path, fn=None):
+def load_with_jsonlines(path, fn):
+  """
+  读取文件数据(每行按json读取)
+  :param path: 文件路径
+  :param fn: 行处理函数
+  :return: 若文件不存在返回None, 若可正确读取则返回经fn处理后的结果列表
+  """
   if not file_exists(path):
     return None
   with jsonlines.open(path, 'r') as dfp:
@@ -261,16 +274,26 @@ def load_data_jsonlines(path):
   :param path: 文件路径
   :return: 若文件不存在返回None, 若可正确读取则返回json对象列表
   """
-  return _load_with_jsonlines(path)
+  return load_with_jsonlines(path, fn=None)
 
 
 def load_file_jsonlines(path):
   """
   读取文件内容(每行按json读取)
   :param path: 文件路径
-  :return: 若文件不存在返回None, 若可正确读取则返回按json行分割的内容列表
+  :return: 若文件不存在返回None, 若可正确读取则返回按json行列表
   """
-  return _load_with_jsonlines(path, fn=to_json)
+  return load_with_jsonlines(path, fn=to_json)
+
+
+def load_file_xto_lines(path, json_pro=False):
+  """
+  读取文件内容
+  :param path: 文件路径
+  :param json_pro: 是否借助jsonlines模块
+  :return: 若文件不存在返回None, 若可正确读取则返回行列表
+  """
+  return load_file_jsonlines(path) if json_pro else load_file_contents(path)
 
 
 def write_line(wfp, line):

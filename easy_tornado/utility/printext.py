@@ -8,7 +8,9 @@ from __future__ import print_function
 import functools
 import sys
 
-from .stringext import as_json
+from .stringext import from_json
+from .stringext import to_json
+from .. import deprecated
 from ..compat import python3
 
 
@@ -72,7 +74,7 @@ def it_print(message='', indent=None, device=1, newline=True, json_fmt=False, **
         indent = 0
       message = ' ' * indent + str(message)
     else:
-      message = as_json(message, indent=indent)
+      message = to_json(message, indent=indent)
 
   if device == 2:
     device = sys.stderr
@@ -97,6 +99,58 @@ def it_prints(message='', indent=None, indent_inner=2, device=1, newline=True):
   if message is not None:
     message = _add_indent(message, indent_inner)
   it_print(message, indent=indent, device=device, newline=newline)
+
+
+def print_indent(message, **kwargs):
+  """
+  缩进打印
+  :param message: 待打印消息
+  :param kwargs: 打印参数
+  """
+  it_print(message, indent=2, **kwargs)
+
+
+def print_prefix(subject, msg=None, **kwargs):
+  """
+  以某个消息为前缀打印
+  :param subject: 打印内容
+  :param msg: 消息前缀
+  :param kwargs: 打印参数
+  """
+  if msg is not None:
+    subject = msg + ' ' + subject
+  it_print(subject, **kwargs)
+
+
+def print_dict(data, msg=None, **kwargs):
+  """
+  打印字典
+  :param data: 数据
+  :param msg: 消息提要
+  :param kwargs: 打印参数
+  """
+  if msg is not None:
+    it_print(msg, **kwargs)
+  for key in data:
+    value = data[key]
+    print_indent('{} => {}'.format(key, value), **kwargs)
+
+
+def print_json(data, **kwargs):
+  """
+  打印数据为字符串(可打印为json的结构)
+  :param data: dict|list|json字符串等可转换为json的对象
+  :param kwargs: 打印参数
+  """
+  if isinstance(data, str):
+    data = from_json(data)
+  data = to_json(data, indent=2, sort_keys=True, ensure_ascii=False)
+  it_print(data, **kwargs)
+
+
+@deprecated(new_fn=print_json, version='0.8')
+def json_print(*args, **kwargs):
+  print_json(*args, **kwargs)
 
 
 def _set_enabled(enable):

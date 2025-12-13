@@ -18,8 +18,8 @@ from tornado.web import RequestHandler
 from ..compat import C_StandardError
 from ..compat import utf8decode
 from ..utility.datetime import current_datetime
-from ..utility.httpclient import json_print
 from ..utility.printext import it_print
+from ..utility.printext import json_print
 from ..utility.stringext import to_json
 
 

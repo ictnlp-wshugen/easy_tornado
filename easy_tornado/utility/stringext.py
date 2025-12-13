@@ -8,6 +8,7 @@ from json import JSONEncoder
 
 from six import iteritems
 
+from .. import deprecated
 from ..compat import utf8encode
 
 
@@ -22,7 +23,7 @@ def md5sum(text):
   return _ctx.hexdigest()
 
 
-def parse_json(json_str):
+def from_json(json_str):
   """
   将json字符串解析为Python数据
   :param json_str: json字符串
@@ -31,10 +32,12 @@ def parse_json(json_str):
   return json.loads(json_str)
 
 
-from_json = parse_json
+@deprecated(new_fn=from_json, version='0.8')
+def parse_json(*args, **kwargs):
+  return from_json(*args, **kwargs)
 
 
-def as_json(subject, **kwargs):
+def to_json(subject, **kwargs):
   """
   将subject转换为json字符串
   :param subject: 待转换对象
@@ -51,7 +54,9 @@ def as_json(subject, **kwargs):
   return utf8encode(data) if utf8 else data
 
 
-to_json = as_json
+@deprecated(new_fn=to_json, version='0.8')
+def as_json(*args, **kwargs):
+  return to_json(*args, **kwargs)
 
 
 def is_json_map(value):
