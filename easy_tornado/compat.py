@@ -6,6 +6,8 @@ import sys
 
 import six
 
+from .functional import deprecated
+
 python2 = six.PY2
 python3 = six.PY3
 
@@ -42,7 +44,7 @@ def cse_message(e):
     return ''
 
 
-def utf8decode(text):
+def utf8_decode(text):
   """
   将text解码为unicode
   :param text: 待解码字符
@@ -51,10 +53,12 @@ def utf8decode(text):
   return text.decode('utf-8')
 
 
-utf8_decode = utf8decode
+@deprecated(new_fn=utf8_decode, version='0.8')
+def utf8decode(*args, **kwargs):
+  return utf8_decode(*args, **kwargs)
 
 
-def utf8encode(text):
+def utf8_encode(text):
   """
   将text编码为UTF8
   :param text: 待编码内容
@@ -63,7 +67,10 @@ def utf8encode(text):
   return text.encode('utf-8')
 
 
-utf8_encode = utf8encode
+@deprecated(new_fn=utf8_encode, version='0.8')
+def utf8encode(*args, **kwargs):
+  return utf8_encode(*args, **kwargs)
+
 
 TYPE_NAME = 'type' if python2 else 'class'
 TYPE_FUNCTION = "<{} 'function'>".format(TYPE_NAME)

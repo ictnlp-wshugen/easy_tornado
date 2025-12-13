@@ -18,5 +18,7 @@ from .invoking import python_invoke
 from .invoking import shell_invoke
 from .tookit import get_or_default
 from .tookit import read_from_stdin
+from .tookit import read_stdin_contents
 from .utility import it_print
 from .utility import it_prints
+from .utility import load_file_xto_lines

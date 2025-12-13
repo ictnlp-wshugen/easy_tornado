@@ -4,6 +4,7 @@
 # date: 2025/08/27 23:19
 import sys
 
+from .. import deprecated
 from ..utility import from_json
 from ..utility import is_json_map
 
@@ -46,17 +47,27 @@ def get_with_try_index(sample, key, default):
   return default
 
 
-def read_from_stdin(buffer=None):
+def read_stdin_contents(buffer=None, strip=True, fn=None):
   """
   从标准输入读取: 空行表示数据结束
   :param buffer: 若传入buffer不为空,则填充
-  :return:
+  :param strip: 是否对每行进行strip操作
+  :param fn: 行处理函数
+  :return: 返回行列表或经fn处理后的结果列表
   """
   if buffer is None:
     buffer = []
   for line in sys.stdin:
-    line = line.strip()
+    if strip:
+      line = line.strip()
+    if fn is not None:
+      line = fn(line)
     if not line:
       break
     buffer.append(line)
   return buffer
+
+
+@deprecated(new_fn=read_stdin_contents, version='0.8')
+def read_from_stdin(*args, **kwargs):
+  return read_stdin_contents(*args, **kwargs)

@@ -33,6 +33,7 @@ from .filesystem import is_abspath
 from .filesystem import load_data_jsonlines
 from .filesystem import load_file_contents
 from .filesystem import load_file_jsonlines
+from .filesystem import load_file_xto_lines
 from .filesystem import load_json_contents
 from .filesystem import load_with_jsonlines
 from .filesystem import mkdtemp
