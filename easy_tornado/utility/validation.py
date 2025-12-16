@@ -5,6 +5,9 @@
 from six.moves import xrange
 
 from .collection import Iterable
+from .printext import it_print
+from .printext import print_json
+from .stringext import from_json
 
 
 def contain_keys(data, *keys):
@@ -35,3 +38,37 @@ def in_range(num, range_from, range_to):
   :return: 若num在范围内返回True, 否则返回False
   """
   return num in xrange(range_from, range_to + 1)
+
+
+def criteria_satisfy(criteria, text_or_obj, trace=False, trace_fn=None):
+  """
+  验证条件是否满足
+  :param criteria: 条件列表
+  :param text_or_obj: 被测试对象
+  :param trace: 是否追踪不满足条件对象
+  :param trace_fn: 追踪处理函数
+  :return: 若符合返回True, 不符合返回False
+  """
+  if len(criteria) > 0:
+    if isinstance(text_or_obj, str):
+      obj = from_json(text_or_obj)
+    else:
+      obj = text_or_obj
+    for criterion in criteria:
+      try:
+        if eval(criterion):
+          continue
+      except KeyError as e:
+        if isinstance(obj, (dict, list)):
+          print_json(obj)
+        else:
+          it_print(obj)
+        raise e
+      if trace:
+        if trace_fn is None:
+          value = obj
+        else:
+          value = trace_fn(obj)
+        it_print('{c} not satisfy {v}'.format(c=criterion, v=value))
+      return False
+  return True

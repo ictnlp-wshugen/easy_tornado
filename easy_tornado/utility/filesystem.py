@@ -356,6 +356,34 @@ def write_iterable_contents(path, iterable_obj, obj2line_func=lambda x: x):
       write_line(wfp, obj2line_func(obj))
 
 
+def try_write_persist(
+  output_path, results, interval=10, last=False, obj2line_fn=to_json,
+  failure_path=None, failures=None, failure_obj2line_fn=to_json):
+  """
+  尝试将数据写入到文件
+  :param output_path: 输出文件路径
+  :param results: 结果对象列表
+  :param interval: 输出间隔, 每interval个对象
+  :param last: 是否为最后一次
+  :param obj2line_fn: 结果对象转行处理函数, 默认转为json
+  :param failure_path: 失败数据文件路径
+  :param failures: 失败对象列表
+  :param failure_obj2line_fn: 失败对象转行处理函数, 默认转为json
+  """
+  ret_len = len(results)
+  persist = (ret_len > 0 and ret_len % interval == 0) or last
+  if not persist:
+    return
+
+  if output_path is not None:
+    write_iterable_contents(output_path, results, obj2line_fn)
+
+  if failures is not None:
+    if failure_path is None:
+      failure_path = '{output_path}.todo'.format(output_path=output_path)
+    write_iterable_contents(failure_path, failures, failure_obj2line_fn)
+
+
 @contextmanager
 def work_dir(path=None):
   cwd = os.getcwd()

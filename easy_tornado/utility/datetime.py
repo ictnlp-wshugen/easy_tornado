@@ -161,6 +161,10 @@ class Timer(object):
   def elapsed(self):
     return time.time() - self.start_ts
 
+  @property
+  def elapsed_ms(self):
+    return '{x:.2f}ms'.format(x=self.elapsed * 1000)
+
   def start(self):
     self.reset()
     return self.start_ts

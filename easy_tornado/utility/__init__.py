@@ -40,6 +40,7 @@ from .filesystem import mkdtemp
 from .filesystem import open_files
 from .filesystem import refine_path
 from .filesystem import remove_file
+from .filesystem import try_write_persist
 from .filesystem import work_dir
 from .filesystem import write_file_contents
 from .filesystem import write_iterable_contents
@@ -59,6 +60,7 @@ from .printext import print_json
 from .printext import print_prefix
 from .printext import set_print_disable
 from .printext import set_print_enable
+from .ratelimiter import RateLimiter
 from .runtime import kill_process
 from .stringext import as_json
 from .stringext import from_json
@@ -68,6 +70,7 @@ from .stringext import parse_json
 from .stringext import percent
 from .stringext import to_json
 from .validation import contain_keys
+from .validation import criteria_satisfy
 from .validation import in_range
 from .webext import TimeoutError
 from .webext import build_url
