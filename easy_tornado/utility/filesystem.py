@@ -215,24 +215,11 @@ def file_append(path_append_to, path_append_from):
   return True
 
 
-def load_file_contents(path, pieces=True, strip=True, fn=None, glue='', **kwargs):
-  """
-  读取文件内容
-  :param path: 文件路径
-  :param pieces: 是否按行返回
-  :param strip: 是否对每行进行strip操作
-  :param fn: 行处理函数
-  :param glue: 将pieces连接在一起的符号
-  :return: 若文件不存在返回None, 若可正确读取则返回按行分割的内容列表
-  """
-  if not file_exists(path):
-    return None
-
+def _load_file_iterable(path, strip=True, fn=None, **kwargs):
   if 'encoding' not in kwargs:
     kwargs['encoding'] = 'UTF-8'
 
   with codecs.open(path, 'r', **kwargs) as fp:
-    lines = []
     for line in fp:
       if strip:
         line = line.strip()
@@ -240,71 +227,104 @@ def load_file_contents(path, pieces=True, strip=True, fn=None, glue='', **kwargs
       if fn is not None:
         line = fn(line)
 
-      lines.append(line)
+      yield line
 
-    if pieces:
-      return lines
 
-    return glue.join([x for x in lines])
+def load_file_contents(
+  path, pieces=True, strip=True, fn=None,
+  glue='', return_iter=False, **kwargs):
+  """
+  读取文件内容
+  :param path: 文件路径
+  :param pieces: 是否按行返回
+  :param strip: 是否对每行进行strip操作
+  :param fn: 行处理函数
+  :param glue: 将pieces连接在一起的符号
+  :param return_iter 返回迭代器
+  :return: 若文件不存在返回None, 若可正确读取则返回按行分割的内容列表
+  """
+  if not file_exists(path):
+    return None
+
+  iter_obj = _load_file_iterable(path, strip=strip, fn=fn, **kwargs)
+  if return_iter:
+    return iter_obj
+
+  lines = [x for x in iter_obj]
+  return lines if pieces else glue.join(lines)
 
 
 def load_json_contents(path):
   return from_json(load_file_contents(path, pieces=False, strip=True))
 
 
-def load_with_jsonlines(path, fn):
+def _load_iter_jsonlines(path, fn):
+  with jsonlines.open(path, 'r') as dfp:
+    for obj in dfp:
+      if fn is not None:
+        obj = fn(obj)
+      yield obj
+
+
+def load_with_jsonlines(path, fn, return_iter=False):
   """
   读取文件数据(每行按json读取)
   :param path: 文件路径
   :param fn: 行处理函数
+  :param return_iter 返回迭代器
   :return: 若文件不存在返回None, 若可正确读取则返回经fn处理后的结果列表
   """
   if not file_exists(path):
     return None
-  with jsonlines.open(path, 'r') as dfp:
-    if fn is None:
-      return [x for x in dfp]
-    else:
-      return [fn(x) for x in dfp]
+
+  iter_obj = _load_iter_jsonlines(path, fn)
+  return iter_obj if return_iter else [x for x in iter_obj]
 
 
-def load_data_jsonlines(path):
+def load_data_jsonlines(path, return_iter=False):
   """
   读取文件数据(每行按json读取)
   :param path: 文件路径
+  :param return_iter 返回迭代器
   :return: 若文件不存在返回None, 若可正确读取则返回json对象列表
   """
-  return load_with_jsonlines(path, fn=None)
+  return load_with_jsonlines(path, fn=None, return_iter=return_iter)
 
 
-def load_file_jsonlines(path):
+def load_file_jsonlines(path, return_iter=False):
   """
   读取文件内容(每行按json读取)
   :param path: 文件路径
+  :param return_iter 返回迭代器
   :return: 若文件不存在返回None, 若可正确读取则返回按json行列表
   """
-  return load_with_jsonlines(path, fn=to_json)
+  return load_with_jsonlines(path, fn=to_json, return_iter=return_iter)
 
 
-def load_file_xto_lines(path, json_pro=False):
+def load_file_xto_lines(path, json_pro=False, return_iter=False):
   """
   读取文件内容
   :param path: 文件路径
   :param json_pro: 是否借助jsonlines模块
+  :param return_iter 返回迭代器
   :return: 若文件不存在返回None, 若可正确读取则返回行列表
   """
-  return load_file_jsonlines(path) if json_pro else load_file_contents(path)
+  if json_pro:
+    return load_file_jsonlines(path, return_iter=return_iter)
+  return load_file_contents(path, return_iter=return_iter)
 
 
-def write_line(wfp, line):
+def write_line(wfp, line, newline=True):
   """
   向文件中写入一行
   :param wfp: 文件写对象
   :param line: 行内容
+  :param newline: 是否追加新行
   """
   if wfp:
     wfp.write(line.strip())
-    wfp.write('\n')
+    if newline:
+      wfp.write('\n')
 
 
 def write_pid(path, **kwargs):
@@ -315,7 +335,30 @@ def write_pid(path, **kwargs):
   if 'encoding' not in kwargs:
     kwargs['encoding'] = 'UTF-8'
   with codecs.open(path, 'w', **kwargs) as wfp:
-    wfp.write(str(os.getpid()))
+    write_line(wfp, str(os.getpid()), newline=False)
+
+
+def write_iterable_contents(path, iterable_obj, obj2line_func=lambda x: x):
+  """
+  将可迭代的数据按行的形式写入文件
+  :param path: 文件路径
+  :param iterable_obj: 可迭代对象
+  :param obj2line_func: 将对象映射为行的函数
+  """
+  with open(path, 'w') as wfp:
+    for obj in iterable_obj:
+      write_line(wfp, obj2line_func(obj))
+
+
+def write_json_contents(path, data, newline=False):
+  """
+  写入JSON内容
+  :param path: 文件路径
+  :param data: 待写入数据
+  :param newline: 是否追加新行
+  """
+  json_str = to_json(data)
+  write_file_contents(path, json_str, newline=newline)
 
 
 def write_file_contents(path, contents, newline=False, **kwargs):
@@ -331,29 +374,6 @@ def write_file_contents(path, contents, newline=False, **kwargs):
     wfp.write(contents)
     if newline:
       wfp.write('\n')
-
-
-def write_json_contents(path, data, newline=False):
-  """
-  写入JSON内容
-  :param path: 文件路径
-  :param data: 待写入数据
-  :param newline: 是否追加新行
-  """
-  json_str = to_json(data)
-  write_file_contents(path, json_str, newline=newline)
-
-
-def write_iterable_contents(path, iterable_obj, obj2line_func=lambda x: x):
-  """
-  将可迭代的数据按行的形式写入文件
-  :param path: 文件路径
-  :param iterable_obj: 可迭代对象
-  :param obj2line_func: 将对象映射为行的函数
-  """
-  with open(path, 'w') as wfp:
-    for obj in iterable_obj:
-      write_line(wfp, obj2line_func(obj))
 
 
 def try_write_persist(

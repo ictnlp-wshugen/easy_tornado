@@ -47,24 +47,35 @@ def get_with_try_index(sample, key, default):
   return default
 
 
-def read_stdin_contents(buffer=None, strip=True, fn=None):
-  """
-  从标准输入读取: 空行表示数据结束
-  :param buffer: 若传入buffer不为空,则填充
-  :param strip: 是否对每行进行strip操作
-  :param fn: 行处理函数
-  :return: 返回行列表或经fn处理后的结果列表
-  """
-  if buffer is None:
-    buffer = []
+def _read_stdin_iterable(strip=True, fn=None):
   for line in sys.stdin:
     if strip:
       line = line.strip()
     if fn is not None:
       line = fn(line)
-    if not line:
-      break
-    buffer.append(line)
+    yield line
+
+
+def read_stdin_contents(buffer=None, strip=True, fn=None, return_iter=False):
+  """
+  从标准输入读取: 空行表示数据结束
+  :param buffer: 若传入buffer不为空,则填充
+  :param strip: 是否对每行进行strip操作
+  :param fn: 行处理函数
+  :param return_iter 返回迭代器
+  :return: 返回行列表或经fn处理后的结果列表
+  """
+  if buffer is not None and return_iter:
+    raise ValueError('buffer must be None if return_iter=True')
+
+  iter_obj = _read_stdin_iterable(strip=strip, fn=fn)
+  if return_iter:
+    return iter_obj
+
+  if buffer is None:
+    buffer = []
+  buffer.extend(iter_obj)
+
   return buffer
 
 
