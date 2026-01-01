@@ -14,10 +14,22 @@ class _FailureRetry(Exception):
 
 class RateLimiter(object):
 
-  def __init__(self, qps, patience=1, fn=None, check_fn=None, except_fn=None):
+  def __init__(
+    self, qps, patience=1, cooldown=None,
+    fn=None, check_fn=None, except_fn=None):
+    """
+    初始化限流器
+    :param qps: 每秒最大请求数
+    :param patience: 最大重试次数
+    :param cooldown: 冷却时间
+    :param fn: 限流器执行的函数
+    :param check_fn: 检查执行函数结果的函数
+    :param except_fn: 异常结果处理函数
+    """
     self.qps = qps
     self.interval = 1 / qps
     self.patience = patience
+    self.cooldown = cooldown
     self.timer = Timer()
     self.closure_fn = fn
     self.check_fn = check_fn
@@ -46,6 +58,8 @@ class RateLimiter(object):
       except Exception as e:
         if not (self.except_fn is None or isinstance(e, _FailureRetry)):
           self.except_fn(e)
+        if self.cooldown is not None:
+          time.sleep(self.cooldown)
         patience -= 1
     return ret
 
