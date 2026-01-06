@@ -15,6 +15,10 @@ def add_criteria_argument(parser):
   )
 
 
+def get_criteria_arguments(args):
+  return args.criteria, args.silent
+
+
 def add_io_arguments(parser, multi_input=False):
   input_parser = parser.add_mutually_exclusive_group(required=True)
   input_parser.add_argument(
@@ -51,6 +55,18 @@ def add_io_arguments(parser, multi_input=False):
   return input_parser
 
 
+def get_in_arguments(args, multi_input=False):
+  return args.mapreduce, args.input_paths if multi_input else args.input_path
+
+
+def get_json_arguments(args):
+  return args.json_pro, args.dry_run
+
+
+def get_out_arguments(args):
+  return args.output_path, args.remove_if_exists
+
+
 def add_qps_argument(parser):
   parser.add_argument(
     '--query-per-second', '-qps', type=int, default=2,
@@ -64,6 +80,14 @@ def add_qps_argument(parser):
     '--patience', '-rp', type=int, default=3,
     help='max retry times before give up'
   )
+  parser.add_argument(
+    '--cooldown', '-cd', type=int, default=0.3,
+    help='cooldown time (second) before next try'
+  )
+
+
+def get_qps_arguments(args):
+  return args.query_per_second, args.timeout, args.patience, args.cooldown
 
 
 def add_ckpt_argument(parser):
@@ -75,3 +99,22 @@ def add_ckpt_argument(parser):
     '--write-interval', '-wi', type=int, default=10,
     help='save interval: per number of lines'
   )
+
+
+def get_ckpt_arguments(args):
+  return args.keep_as_key, args.write_interval
+
+
+def add_multirun_args(parser):
+  parser.add_argument(
+    '--world-rank', type=int, metavar='N', default=None,
+    help='multi process running index order'
+  )
+  parser.add_argument(
+    '--local-size', type=int, metavar='N', default=None,
+    help='multi process running local size'
+  )
+
+
+def get_multirun_arguments(args):
+  return args.world_rank, args.local_size
