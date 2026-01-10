@@ -19,7 +19,7 @@ def get_criteria_arguments(args):
   return args.criteria, args.silent
 
 
-def add_io_arguments(parser, multi_input=False):
+def add_io_arguments(parser, multi_input=False, output_dir=False):
   input_parser = parser.add_mutually_exclusive_group(required=True)
   input_parser.add_argument(
     '--mapreduce', '-mr', action='store_true', default=False,
@@ -44,10 +44,16 @@ def add_io_arguments(parser, multi_input=False):
     '--json-pro', '-jp', action='store_true', default=False,
     help='use jsonlines to load lines instead of load_file_contents'
   )
-  parser.add_argument(
-    '--output-path', '-o', default=None,
-    help='path to output results file'
-  )
+  if output_dir:
+    parser.add_argument(
+      '--output-dir', '-o', default=None,
+      help='path to output results files under this directory'
+    )
+  else:
+    parser.add_argument(
+      '--output-path', '-o', default=None,
+      help='path to output results file'
+    )
   parser.add_argument(
     '--remove-if-exists', '-rie', action='store_true', default=False,
     help='remove output path if already exists'
@@ -63,8 +69,9 @@ def get_json_arguments(args):
   return args.json_pro, args.dry_run
 
 
-def get_out_arguments(args):
-  return args.output_path, args.remove_if_exists
+def get_out_arguments(args, output_dir=False):
+  output_val = args.output_dir if output_dir else args.output_path
+  return output_val, args.remove_if_exists
 
 
 def add_qps_argument(parser):
